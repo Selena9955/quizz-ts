@@ -5,7 +5,7 @@ function App() {
 	return (
 		<>
 			<Header />
-			<main className="mt-14 w-full">
+			<main className="mt-14 container">
 				<Outlet />
 			</main>
 		</>
