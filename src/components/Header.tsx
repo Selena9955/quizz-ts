@@ -78,7 +78,15 @@ function Header() {
 						</Avatar>
 						<p>username</p>
 					</div>
-					<nav className="grid gap-1 mt-3">
+					<div className="flex gap-2 my-3">
+						<Button variant="default" asChild className="flex-grow">
+							<NavLink to="">新增問題</NavLink>
+						</Button>
+						<Button variant="secondary" asChild className="flex-grow">
+							<NavLink to="">新增題目</NavLink>
+						</Button>
+					</div>
+					<nav className="grid gap-1 ">
 						{MenuList.map((menuItem, index) => (
 							<NavLink
 								to={menuItem.path}
