@@ -10,6 +10,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useEffect, useState } from "react";
 import SearchBtn from "./SearchBtn";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const MenuList = [
   { name: "題庫", path: "/problems" },
@@ -19,6 +20,7 @@ const MenuList = [
 
 function Header() {
   const location = useLocation();
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [navOpened, setNavOpened] = useState(false);
 
@@ -35,66 +37,69 @@ function Header() {
             LOGO
           </Link>
 
-          {/* phone */}
-          <div className="flex items-center md:hidden">
-            <SearchBtn />
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setNavOpened(!navOpened)}
-            >
-              <Menu />
-            </Button>
-          </div>
-          {/* desktop */}
-          <div className="hidden items-center gap-5 md:flex">
-            <SearchBtn />
+          {isDesktop ? (
+            /* desktop */
+            <div className="items-center gap-5 md:flex">
+              <SearchBtn />
 
-            <nav className="flex items-center gap-5">
-              {MenuList.map((menuItem, index) => (
-                <NavLink
-                  to={menuItem.path}
-                  key={index}
-                  className="font-bold text-gray-600 hover:text-gray-900"
-                >
-                  {menuItem.name}
-                </NavLink>
-              ))}
-            </nav>
-            {isLoggedIn ? (
-              <>
-                <DropdownMenu modal={false}>
-                  <DropdownMenuTrigger asChild>
-                    <Button>新增</Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem>測試1</DropdownMenuItem>
-                    <DropdownMenuItem>測試2</DropdownMenuItem>
-                    <DropdownMenuItem>測試3</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                <DropdownMenu modal={false}>
-                  <DropdownMenuTrigger>
-                    <Avatar>
-                      <AvatarImage
-                        src="https://github.com/.png"
-                        alt="@shadcn"
-                      />
-                      <AvatarFallback>U</AvatarFallback>
-                    </Avatar>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem>設定</DropdownMenuItem>
-                    <DropdownMenuItem>登出</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
-            ) : (
-              <Button asChild variant="default">
-                <Link to="/login">登入</Link>
+              <nav className="flex items-center gap-5">
+                {MenuList.map((menuItem, index) => (
+                  <NavLink
+                    to={menuItem.path}
+                    key={index}
+                    className="t ext-gray-600 font-bold hover:text-gray-900"
+                  >
+                    {menuItem.name}
+                  </NavLink>
+                ))}
+              </nav>
+              {isLoggedIn ? (
+                <>
+                  <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger asChild>
+                      <Button>新增</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem>測試1</DropdownMenuItem>
+                      <DropdownMenuItem>測試2</DropdownMenuItem>
+                      <DropdownMenuItem>測試3</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger>
+                      <Avatar>
+                        <AvatarImage
+                          src="https://github.com/.png"
+                          alt="@shadcn"
+                        />
+                        <AvatarFallback>U</AvatarFallback>
+                      </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem>設定</DropdownMenuItem>
+                      <DropdownMenuItem>登出</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </>
+              ) : (
+                /* phone */
+                <Button asChild variant="default">
+                  <Link to="/login">登入</Link>
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center">
+              <SearchBtn />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setNavOpened(!navOpened)}
+              >
+                <Menu />
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
