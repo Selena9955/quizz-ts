@@ -60,9 +60,8 @@ function Header() {
                       <Button>新增</Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem>測試1</DropdownMenuItem>
-                      <DropdownMenuItem>測試2</DropdownMenuItem>
-                      <DropdownMenuItem>測試3</DropdownMenuItem>
+                      <DropdownMenuItem>新增題目</DropdownMenuItem>
+                      <DropdownMenuItem>新增討論</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                   <DropdownMenu modal={false}>
@@ -84,7 +83,7 @@ function Header() {
               ) : (
                 /* phone */
                 <Button asChild variant="default">
-                  <Link to="/login">登入</Link>
+                  <Link to="/auth/login">登入</Link>
                 </Button>
               )}
             </div>
@@ -154,7 +153,7 @@ function Header() {
               </>
             ) : (
               <Link
-                to="/login"
+                to="/auth/login"
                 className="hover:bg-accent rounded-lg p-2 font-bold text-gray-600"
               >
                 登入
