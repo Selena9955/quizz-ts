@@ -5,7 +5,7 @@ function App() {
   return (
     <>
       <Header />
-      <main className="container mt-14">
+      <main className="container mt-14 py-6 md:py-12">
         <Outlet />
       </main>
     </>

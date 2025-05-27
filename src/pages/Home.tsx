@@ -8,13 +8,13 @@ import { AvatarFallback } from "@radix-ui/react-avatar";
 import { Tag } from "@/components/ui/tag";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import Article from "@/components/Article";
+import ArticleCard from "@/components/ArticleCard";
 import ActivityPreview from "@/components/ActivityPreview";
 import ProblemCard from "@/components/ProblemCard";
 
 function Home() {
   return (
-    <div className="w-full py-6">
+    <>
       {/* 使用者活動紀錄 */}
       <section>
         <h1 className="mb-3 text-2xl font-bold">歡迎回來</h1>
@@ -143,7 +143,7 @@ function Home() {
           }}
         >
           {Array.from({ length: 5 }).map((_, index) => (
-            <SwiperSlide style={{ width: "auto" }}>
+            <SwiperSlide style={{ width: "auto" }} key={index}>
               <ProblemCard />
             </SwiperSlide>
           ))}
@@ -155,16 +155,16 @@ function Home() {
           <h2 className="mb-3 text-lg font-bold">你可能感興趣的文章</h2>
 
           <div className="bg-muted grid gap-3 rounded-md p-3">
-            {Array.from({ length: 10 }).map(() => (
-              <Article />
+            {Array.from({ length: 10 }).map((_, index) => (
+              <ArticleCard key={index} />
             ))}
           </div>
         </div>
         <div className="flex-1">
           <h2 className="mb-3 text-lg font-bold">推薦用戶</h2>
           <div className="bg-muted grid gap-3 rounded-lg p-3">
-            {Array.from({ length: 5 }).map(() => (
-              <div className="rounded-md bg-white p-3">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <div key={index} className="rounded-md bg-white p-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <Avatar>
@@ -187,7 +187,7 @@ function Home() {
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 }
 

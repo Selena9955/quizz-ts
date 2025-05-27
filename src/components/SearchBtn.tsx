@@ -12,7 +12,7 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command";
-import React, { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 function SearchBtn() {
   const [open, setOpen] = useState(false);
