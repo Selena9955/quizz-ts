@@ -2,7 +2,7 @@ import { Link, Outlet, useLocation } from "react-router";
 
 export default function AuthLayout() {
   const location = useLocation();
-  const isLogin = location.pathname === "/login";
+  const isLogin = location.pathname === "/auth/login";
 
   return (
     <main className="bg-muted h-dvh">
@@ -17,15 +17,15 @@ export default function AuthLayout() {
           {isLogin ? "還不是會員嗎？" : "已經有會員？"}
 
           <Link
-            to={isLogin ? "/register" : "/login"}
+            to={isLogin ? "/auth/register" : "/auth/login"}
             className="text-secondary hover:text-secondary/80 font-bold"
           >
             {isLogin ? "立即註冊" : "登入會員"}
           </Link>
         </p>{" "}
-        <form className="bg-card text-card-foreground w-full space-y-4 rounded-xl border p-6 shadow sm:w-100">
+        <div className="bg-card text-card-foreground w-full rounded-xl border p-6 shadow sm:w-100">
           <Outlet />
-        </form>
+        </div>
       </div>
     </main>
   );
