@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
@@ -10,6 +11,7 @@ interface LoginForm {
 }
 function Login() {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
   const [form, setForm] = useState<LoginForm>({ email: "", password: "" });
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,26 +24,27 @@ function Login() {
     try {
       const res = await fetch("http://localhost:8081/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded", // 因後端用 @RequestParam
-        },
-        body: new URLSearchParams(form).toString(),
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
       });
 
-      const data = await res.json();
+      const resdata = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.message || "登入失敗");
+        throw new Error(resdata.message || "登入失敗");
       }
 
-      alert("✅ 登入成功");
+      const user = resdata.data.user;
+      setUser(user);
+
       navigate("/");
     } catch (err: any) {
       alert("❌ " + err.message);
     }
   };
   return (
-    <>
+    <form className="space-y-4">
       <div>
         <Label className="mb-2 font-bold">信箱</Label>
         <Input
@@ -73,7 +76,7 @@ function Login() {
           登入
         </Button>
       </div>
-    </>
+    </form>
   );
 }
 

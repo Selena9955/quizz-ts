@@ -1,5 +1,5 @@
-import { Link, NavLink, useLocation } from "react-router";
-import { Divide, Menu } from "lucide-react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router";
+import { Menu } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -7,10 +7,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useEffect, useState } from "react";
 import SearchBtn from "./SearchBtn";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useAuth } from "@/context/AuthContext";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
 
 const MenuList = [
   { name: "題庫", path: "/problems" },
@@ -20,14 +30,43 @@ const MenuList = [
 
 function Header() {
   const location = useLocation();
+  const navigate = useNavigate();
   const isDesktop = useMediaQuery("(min-width: 768px)");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user, setUser } = useAuth();
   const [navOpened, setNavOpened] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  // 判斷是否登入
+  const isLoggedIn = user !== null;
+  const isVerified = user?.status === "VERIFIED";
 
   useEffect(() => {
     // 每次路由變化就關閉選單
     setNavOpened(false);
   }, [location]);
+
+  const handleLogout = async () => {
+    try {
+      // 呼叫後端登出 API，清除 cookie
+      await fetch("http://localhost:8081/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      // 清除前端使用者狀態
+      setUser(null);
+    } catch (error) {
+      console.error("登出失敗", error);
+    }
+  };
+
+  const handleAddBtn = (path: string) => {
+    if (isVerified) {
+      // navigate(`/${path}/add`);
+    } else {
+      setDialogOpen(true);
+    }
+  };
 
   return (
     <header className="fixed inset-x-0 top-0 z-10 border-b border-gray-950/5">
@@ -60,8 +99,12 @@ function Header() {
                       <Button>新增</Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem>新增題目</DropdownMenuItem>
-                      <DropdownMenuItem>新增討論</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleAddBtn("problem")}>
+                        新增題目
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleAddBtn("article")}>
+                        新增討論
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                   <DropdownMenu modal={false}>
@@ -76,7 +119,9 @@ function Header() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuItem>設定</DropdownMenuItem>
-                      <DropdownMenuItem>登出</DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleLogout}>
+                        登出
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </>
@@ -162,6 +207,30 @@ function Header() {
           </nav>
         </div>
       )}
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>需要驗證信箱</DialogTitle>
+            <DialogDescription>
+              您必須先驗證信箱才能使用此功能，是否前往驗證頁面？
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              取消
+            </Button>
+            <Button
+              onClick={() => {
+                setDialogOpen(false);
+                navigate("/auth/verify");
+              }}
+            >
+              前往驗證
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </header>
   );
 }

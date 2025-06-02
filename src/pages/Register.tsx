@@ -193,8 +193,7 @@ function Register() {
         throw new Error(data.message || "註冊失敗");
       }
 
-      alert("✅ 註冊成功");
-      navigate("/");
+      navigate("/auth/verify", { state: { email } });
     } catch (err: any) {
       alert("❌ " + err.message);
     }

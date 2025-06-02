@@ -1,8 +1,7 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router";
 import "./index.css";
 import Layout from "./components/Layout.tsx";
-import { createBrowserRouter, RouterProvider } from "react-router";
 import Home from "./pages/Home.tsx";
 import Problems from "./pages/Problems.tsx";
 import Articles from "./pages/Articles.tsx";
@@ -10,7 +9,9 @@ import ArticleAdd from "./pages/ArticleAdd.tsx";
 import Tags from "./pages/Tags.tsx";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
+import Verify from "./pages/Verify.tsx";
 import AuthLayout from "./components/AuthLayout.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,7 @@ const router = createBrowserRouter([
         children: [
           { path: "login", Component: Login },
           { path: "register", Component: Register },
+          { path: "verify", Component: Verify },
         ],
       },
     ],
@@ -43,5 +45,7 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")!).render(
-  <RouterProvider router={router} />,
+  <AuthProvider>
+    <RouterProvider router={router} />,
+  </AuthProvider>,
 );
