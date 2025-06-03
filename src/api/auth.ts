@@ -78,3 +78,20 @@ export async function sendVerifyCode(email: string) {
     throw err;
   }
 }
+export async function checkVerifyCode(email: string, code: string) {
+  try {
+    const res = await fetch(`${API_BASE}/auth/check-verify-code`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, code }),
+    });
+    const resData = await res.json();
+    if (!res.ok) {
+      throw new Error(resData.message || "驗證碼發送失敗");
+    }
+    return resData;
+  } catch (err) {
+    console.error("checkVerifyCode error:", err);
+    throw err;
+  }
+}
