@@ -81,8 +81,7 @@ export default function Register() {
     if (!validatePwd(form.password, form.secondPassword, setMsg)) return;
 
     try {
-      const res = await checkEmailRegistered(form.email);
-      const resData = await res.json();
+      const resData = await checkEmailRegistered(form.email);
 
       if (resData.data.available) {
         setStep(2);
@@ -105,12 +104,7 @@ export default function Register() {
     e.preventDefault();
     if (!isUserNameValid) return;
     try {
-      const res = await register(form);
-      const resData = await res.json();
-
-      if (!res.ok) {
-        throw new Error(resData.message || "註冊失敗");
-      }
+      const resData = await register(form);
 
       navigate("/auth/verify", { state: { email: resData.data.email } });
     } catch (err: any) {

@@ -35,7 +35,7 @@ export async function checkUsernameRegistered(
       throw new Error("用戶名查詢失敗");
     }
 
-    return res.json();
+    return await res.json();
   } catch (err) {
     console.error("checkUsername error:", err);
     throw err;
@@ -49,14 +49,32 @@ export async function register(form: registerFormData) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
-
+    const resData = await res.json();
     if (!res.ok) {
       throw new Error(resData.message || "註冊失敗");
     }
 
-    return res;
+    return resData;
   } catch (err) {
     console.error("register error:", err);
+    throw err;
+  }
+}
+
+export async function sendVerifyCode(email: string) {
+  try {
+    const res = await fetch(`${API_BASE}/auth/send-verify-code`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const resData = await res.json();
+    if (!res.ok) {
+      throw new Error(resData.message || "寄信箱驗證碼失敗");
+    }
+    return resData;
+  } catch (err) {
+    console.error("sendVerifyCode error:", err);
     throw err;
   }
 }
