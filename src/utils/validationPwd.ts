@@ -1,4 +1,4 @@
-import type { AuthMessage } from "@/types/Auth";
+import type { AuthMessage } from "@/types/auth.types";
 export function validatePwd(
   password: string,
   confirmPassword: string,

@@ -11,3 +11,8 @@ export type registerFormData = {
   secondPassword: string;
   username: string;
 };
+
+export type LoginFormData = {
+  email: string;
+  password: string;
+};

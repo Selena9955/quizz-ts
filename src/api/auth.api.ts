@@ -1,4 +1,4 @@
-import type { registerFormData } from "@/types/Auth";
+import type { registerFormData } from "@/types/auth.types";
 
 const API_BASE = "http://localhost:8081";
 
