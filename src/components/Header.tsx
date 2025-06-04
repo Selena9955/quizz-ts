@@ -50,13 +50,12 @@ function Header() {
     try {
       // 呼叫後端登出 API，清除 cookie
       const res = await logout();
-      if (res.success) {
+      if (res.status === 200) {
         setUser(null);
-      } else {
-        alert("⚠️ 登出失敗，請稍後再試");
+        navigate("/");
       }
     } catch (error) {
-      console.error("登出失敗", error);
+      alert("⚠️ 登出失敗，請稍後再試");
     }
   }
 

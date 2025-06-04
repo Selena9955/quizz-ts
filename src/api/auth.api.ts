@@ -79,23 +79,19 @@ export async function login(form: LoginFormData) {
   }
 }
 export async function logout() {
-  console.log(123);
-
   try {
     const res = await fetch(`${API_BASE}/auth/logout`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
     });
-
     const resData = await res.json();
     if (!res.ok) {
       throw new Error(resData.message || "登入失敗");
     }
     return resData;
   } catch (err) {
-    console.error("register error:", err);
-    throw err;
+    console.error("logout error:", err);
   }
 }
 export async function sendVerifyCode(email: string) {

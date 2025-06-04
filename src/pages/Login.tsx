@@ -24,6 +24,7 @@ function Login() {
       const isVerified = resData.data.isVerified;
       if (isVerified) {
         setUser(resData.data.user);
+        console.clear();
         navigate("/");
       } else {
         navigate("/auth/verify", { state: { email: resData.data.email } });

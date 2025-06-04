@@ -2,12 +2,12 @@ import { checkVerifyCode, sendVerifyCode } from "@/api/auth.api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 
 export default function Verify() {
   const location = useLocation();
+  const navigate = useNavigate();
   const email = location.state?.email || "";
   const [msg, setMsg] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
@@ -26,8 +26,8 @@ export default function Verify() {
     e.preventDefault();
     try {
       const resData = await checkVerifyCode(email, verifyCode);
-      setMsg("✅ " + resData.message);
-      alert("驗證成功");
+      alert("信箱驗證成功，請重新登入");
+      navigate("/auth/login");
     } catch (err: any) {
       setMsg("❌ 驗證失敗：" + err.message);
     }

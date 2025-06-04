@@ -11,13 +11,18 @@ import { Button } from "@/components/ui/button";
 import ArticleCard from "@/components/ArticleCard";
 import ActivityPreview from "@/components/ActivityPreview";
 import ProblemCard from "@/components/ProblemCard";
+import { useAuth } from "@/context/AuthContext";
 
 function Home() {
+  const { user } = useAuth();
+
   return (
     <>
       {/* 使用者活動紀錄 */}
       <section>
-        <h1 className="mb-3 text-2xl font-bold">歡迎回來</h1>
+        <h1 className="mb-3 text-2xl font-bold">
+          歡迎回來{user && `，${user?.username}`}
+        </h1>
         <div className="grid grid-cols-1 items-stretch gap-3 lg:grid-cols-2 xl:grid-cols-3">
           <ActivityPreview
             icon={<FileClock />}
