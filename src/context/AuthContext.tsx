@@ -1,3 +1,4 @@
+import { fetchCurrentUser } from "@/api/auth.api";
 import {
   createContext,
   useContext,
@@ -25,21 +26,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:8081/auth/user", {
-      method: "GET",
-      credentials: "include",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("未登入");
-        return res.json();
-      })
-      .then((data) => {
-        setUser(data.user); // 或 data 取決於回傳格式
-        console.log("👤 使用者登入中", data.user);
-      })
-      .catch((e) => {
-        console.log(e), setUser(null);
-      });
+    const getUser = async () => {
+      try {
+        const data = await fetchCurrentUser();
+        setUser(data.user);
+      } catch (err) {
+        setUser(null);
+      }
+    };
+
+    getUser();
   }, []);
 
   return (

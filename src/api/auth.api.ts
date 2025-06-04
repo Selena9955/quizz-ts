@@ -41,7 +41,6 @@ export async function checkUsernameRegistered(
     throw err;
   }
 }
-
 export async function register(form: registerFormData) {
   try {
     const res = await fetch(`${API_BASE}/auth/register`, {
@@ -130,6 +129,23 @@ export async function checkVerifyCode(email: string, code: string) {
     return resData;
   } catch (err) {
     console.error("checkVerifyCode error:", err);
+    throw err;
+  }
+}
+export async function fetchCurrentUser() {
+  try {
+    const res = await fetch(`${API_BASE}/auth/user`, {
+      method: "GET",
+      credentials: "include",
+    });
+    const resData = await res.json();
+    if (!res.ok) {
+      throw new Error(resData.message || "未登入");
+    }
+
+    return resData;
+  } catch (err) {
+    console.log("getUser -", err);
     throw err;
   }
 }
