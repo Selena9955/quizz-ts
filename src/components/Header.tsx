@@ -21,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "./ui/dialog";
+import { logout } from "@/api/auth.api";
 
 const MenuList = [
   { name: "題庫", path: "/problems" },
@@ -45,20 +46,19 @@ function Header() {
     setNavOpened(false);
   }, [location]);
 
-  const handleLogout = async () => {
+  async function handleLogout() {
     try {
       // 呼叫後端登出 API，清除 cookie
-      await fetch("http://localhost:8081/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      // 清除前端使用者狀態
-      setUser(null);
+      const res = await logout();
+      if (res.success) {
+        setUser(null);
+      } else {
+        alert("⚠️ 登出失敗，請稍後再試");
+      }
     } catch (error) {
       console.error("登出失敗", error);
     }
-  };
+  }
 
   const handleAddBtn = (path: string) => {
     if (isVerified) {
@@ -192,6 +192,7 @@ function Header() {
                 <Link
                   to=""
                   className="hover:bg-accent rounded-lg p-2 font-bold text-gray-600"
+                  onClick={handleLogout}
                 >
                   登出
                 </Link>

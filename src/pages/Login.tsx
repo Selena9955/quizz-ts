@@ -1,56 +1,47 @@
+import { login } from "@/api/auth.api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/context/AuthContext";
+import type { LoginFormData } from "@/types/auth.types";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
-interface LoginForm {
-  email: string;
-  password: string;
-}
 function Login() {
   const navigate = useNavigate();
   const { setUser } = useAuth();
-  const [form, setForm] = useState<LoginForm>({ email: "", password: "" });
+  const [form, setForm] = useState<LoginFormData>({ email: "", password: "" });
 
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:8081/auth/login", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-
-      const resdata = await res.json();
-
-      if (!res.ok) {
-        throw new Error(resdata.message || "登入失敗");
+      const resData = await login(form);
+      const isVerified = resData.data.isVerified;
+      if (isVerified) {
+        setUser(resData.data.user);
+        navigate("/");
+      } else {
+        navigate("/auth/verify", { state: { email: resData.data.email } });
       }
-
-      const user = resdata.data.user;
-      setUser(user);
-
-      navigate("/");
     } catch (err: any) {
-      alert("❌ " + err.message);
+      console.error(err.message);
     }
-  };
+  }
+
   return (
-    <form className="space-y-4">
+    <form className="space-y-4" onSubmit={handleSubmit}>
       <div>
         <Label className="mb-2 font-bold">信箱</Label>
         <Input
           type="email"
           placeholder="excample@gmail.com"
           name="email"
+          autoComplete="email"
           onChange={handleFormChange}
         />
       </div>
@@ -60,6 +51,7 @@ function Login() {
           type="password"
           placeholder="密碼"
           name="password"
+          autoComplete="current-password"
           onChange={handleFormChange}
         />
       </div>
@@ -72,7 +64,7 @@ function Login() {
         </Link>
       </div>
       <div className="text-center">
-        <Button className="w-full text-center" onClick={handleSubmit}>
+        <Button type="submit" className="w-full text-center">
           登入
         </Button>
       </div>
