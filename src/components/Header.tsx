@@ -35,11 +35,9 @@ function Header() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const { user, setUser } = useAuth();
   const [navOpened, setNavOpened] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   // 判斷是否登入
   const isLoggedIn = user !== null;
-  const isVerified = user?.status === "VERIFIED";
 
   useEffect(() => {
     // 每次路由變化就關閉選單
@@ -58,14 +56,6 @@ function Header() {
       alert("⚠️ 登出失敗，請稍後再試");
     }
   }
-
-  const handleAddBtn = (path: string) => {
-    if (isVerified) {
-      // navigate(`/${path}/add`);
-    } else {
-      setDialogOpen(true);
-    }
-  };
 
   return (
     <header className="fixed inset-x-0 top-0 z-10 border-b border-gray-950/5">
@@ -86,6 +76,7 @@ function Header() {
                     to={menuItem.path}
                     key={index}
                     className="t ext-gray-600 font-bold hover:text-gray-900"
+                    end
                   >
                     {menuItem.name}
                   </NavLink>
@@ -98,11 +89,11 @@ function Header() {
                       <Button>新增</Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem onClick={() => handleAddBtn("problem")}>
-                        新增題目
+                      <DropdownMenuItem>
+                        <Link to="/problems/new">新增題目</Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleAddBtn("article")}>
-                        新增討論
+                      <DropdownMenuItem>
+                        <Link to="/articles/new">新增討論</Link>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -161,11 +152,11 @@ function Header() {
           {isLoggedIn && (
             <div className="my-4 flex gap-2">
               <Button variant="default" asChild className="flex-grow">
-                <NavLink to="">新增問題</NavLink>
+                <Link to="/articles/new">新增問題</Link>
               </Button>
 
               <Button variant="outline" asChild className="flex-grow">
-                <NavLink to="">新增題目</NavLink>
+                <Link to="/problems/new">新增題目</Link>
               </Button>
             </div>
           )}
@@ -207,30 +198,6 @@ function Header() {
           </nav>
         </div>
       )}
-
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>需要驗證信箱</DialogTitle>
-            <DialogDescription>
-              您必須先驗證信箱才能使用此功能，是否前往驗證頁面？
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDialogOpen(false)}>
-              取消
-            </Button>
-            <Button
-              onClick={() => {
-                setDialogOpen(false);
-                navigate("/auth/verify");
-              }}
-            >
-              前往驗證
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </header>
   );
 }

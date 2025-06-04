@@ -4,8 +4,9 @@ import "./index.css";
 import Layout from "./components/Layout.tsx";
 import Home from "./pages/Home.tsx";
 import Problems from "./pages/Problems.tsx";
+import ProblemNew from "./pages/ProblemNew.tsx";
 import Articles from "./pages/Articles.tsx";
-import ArticleAdd from "./pages/ArticleAdd.tsx";
+import ArticleNew from "./pages/ArticleNew.tsx";
 import Tags from "./pages/Tags.tsx";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
@@ -22,12 +23,13 @@ const router = createBrowserRouter([
         Component: Layout,
         children: [
           { index: true, Component: Home },
-          { path: "problems", Component: Problems },
+          { path: "problems", Component: Problems, children: [] },
+          { path: "problems/new", Component: ProblemNew },
           {
             path: "articles",
             Component: Articles,
           },
-          { path: "articles/add", Component: ArticleAdd },
+          { path: "articles/new", Component: ArticleNew },
           { path: "tags", Component: Tags },
         ],
       },
