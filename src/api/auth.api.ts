@@ -1,4 +1,4 @@
-import type { registerFormData } from "@/types/auth.types";
+import type { LoginFormData, registerFormData } from "@/types/auth.types";
 
 const API_BASE = "http://localhost:8081";
 
@@ -60,11 +60,12 @@ export async function register(form: registerFormData) {
     throw err;
   }
 }
-export async function login(form: registerFormData) {
+export async function login(form: LoginFormData) {
   try {
     const res = await fetch(`${API_BASE}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(form),
     });
     const resData = await res.json();

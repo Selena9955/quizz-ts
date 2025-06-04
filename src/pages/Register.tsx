@@ -65,7 +65,7 @@ export default function Register() {
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  async function handleNextStep(e) {
+  async function handleNextStep(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
