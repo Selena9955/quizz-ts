@@ -5,7 +5,7 @@ import {
   checkEmailRegistered,
   checkUsernameRegistered,
   register,
-} from "@/api/auth";
+} from "@/api/auth.api";
 import type { AuthMessage, registerFormData } from "@/types/Auth";
 import { Button } from "@/components/ui/button";
 import InputField from "@/components/InputField";

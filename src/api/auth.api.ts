@@ -60,7 +60,24 @@ export async function register(form: registerFormData) {
     throw err;
   }
 }
+export async function login(form: registerFormData) {
+  try {
+    const res = await fetch(`${API_BASE}/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+    const resData = await res.json();
+    if (!res.ok) {
+      throw new Error(resData.message || "登入失敗");
+    }
 
+    return resData;
+  } catch (err) {
+    console.error("register error:", err);
+    throw err;
+  }
+}
 export async function sendVerifyCode(email: string) {
   try {
     const res = await fetch(`${API_BASE}/auth/send-verify-code`, {
