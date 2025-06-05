@@ -54,6 +54,9 @@ const QuillEditor = ({ value, onChange }: QuillEditorProps): JSX.Element => {
     container.append(editorElement);
     let quill: Quill = new Quill(editorElement, {
       theme: "snow",
+      modules: {
+        toolbar: toolbarOptions,
+      },
     });
 
     quill.root.innerHTML = value || "";
@@ -69,3 +72,19 @@ const QuillEditor = ({ value, onChange }: QuillEditorProps): JSX.Element => {
 };
 
 export default QuillEditor;
+
+const toolbarOptions = [
+  [{ header: [1, 2, 3, 4, 5, 6, false] }],
+  [
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    { script: "sub" },
+    { script: "super" },
+  ],
+  ["blockquote", "code-block", "link", "image"],
+  [{ list: "ordered" }, { list: "bullet" }, { list: "check" }],
+  [{ align: [] }, { indent: "-1" }, { indent: "+1" }],
+  ["clean"],
+];
