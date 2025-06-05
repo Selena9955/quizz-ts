@@ -135,3 +135,13 @@
   min-height: 10rem;
   font-size: 1rem;
 }
+.ql-toolbar.ql-snow,
+.ql-container.ql-snow {
+  border: 1px solid var(--muted-hover) !important;
+}
+.ql-toolbar {
+  @apply rounded-tl-md rounded-tr-md;
+}
+.ql-container {
+  @apply rounded-br-md rounded-bl-md;
+}
