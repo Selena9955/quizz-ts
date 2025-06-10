@@ -61,7 +61,7 @@ function TagsInput({ selectedTags, onChangeSelectedTags }: TagsInputProps) {
 
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput
-          placeholder="請輸入搜尋文字"
+          placeholder="請輸入標籤名稱"
           value={searchValue}
           onValueChange={setSearchValue}
           onKeyDown={(e) => {

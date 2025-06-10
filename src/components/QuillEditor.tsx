@@ -1,75 +1,98 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import Quill from "quill";
+
+export type QuillEditorRef = {
+  getText: () => string;
+};
 
 type QuillEditorProps = {
   value?: string;
   onChange?: (value: string) => any;
 };
-const QuillEditor = ({ value, onChange }: QuillEditorProps): JSX.Element => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const lastChangeRef = React.useRef<string | null>(null);
+const QuillEditor = forwardRef<QuillEditorRef, QuillEditorProps>(
+  ({ value, onChange }, ref) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const lastChangeRef = React.useRef<string | null>(null);
 
-  const [quill, setQuill] = useState<Quill | null>(null);
+    const [quill, setQuill] = useState<Quill | null>(null);
 
-  useEffect(() => {
-    if (!quill) {
-      return;
-    }
+    useImperativeHandle(
+      ref,
+      () => ({
+        getText: () => {
+          if (!quill) return "";
+          const text = quill.getText().trim();
+          const lines = text.split("\n").slice(0, 3).join("\n");
+          return lines;
+        },
+      }),
+      [quill],
+    );
 
-    if (value !== lastChangeRef.current) {
-      quill.root.innerHTML = value || "";
-    }
-  }, [quill, value]);
-
-  useEffect(() => {
-    if (!quill) {
-      return;
-    }
-
-    function handleChange() {
-      const contents = quill!.root.innerHTML;
-      lastChangeRef.current = contents;
-
-      console.log("HERE!");
-
-      if (onChange) {
-        onChange(contents);
+    useEffect(() => {
+      if (!quill) {
+        return;
       }
-    }
 
-    quill.on("text-change", handleChange);
+      if (value !== lastChangeRef.current) {
+        quill.root.innerHTML = value || "";
+      }
+    }, [quill, value]);
 
-    return () => {
-      quill.off("text-change", handleChange);
-    };
-  }, [quill, onChange]);
+    useEffect(() => {
+      if (!quill) {
+        return;
+      }
 
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) {
-      return;
-    }
+      function handleChange() {
+        const contents = quill!.root.innerHTML;
+        lastChangeRef.current = contents;
 
-    const editorElement = document.createElement("div");
-    container.append(editorElement);
-    let quill: Quill = new Quill(editorElement, {
-      theme: "snow",
-      modules: {
-        toolbar: toolbarOptions,
-      },
-    });
+        if (onChange) {
+          onChange(contents);
+        }
+      }
 
-    quill.root.innerHTML = value || "";
+      quill.on("text-change", handleChange);
 
-    setQuill(quill);
+      return () => {
+        quill.off("text-change", handleChange);
+      };
+    }, [quill, onChange]);
 
-    return () => {
-      container.innerHTML = "";
-    };
-  }, []);
+    useEffect(() => {
+      const container = containerRef.current;
+      if (!container) {
+        return;
+      }
 
-  return <div ref={containerRef}></div>;
-};
+      const editorElement = document.createElement("div");
+      container.append(editorElement);
+      let quill: Quill = new Quill(editorElement, {
+        theme: "snow",
+        modules: {
+          toolbar: toolbarOptions,
+        },
+      });
+
+      quill.root.innerHTML = value || "";
+
+      setQuill(quill);
+
+      return () => {
+        container.innerHTML = "";
+      };
+    }, []);
+
+    return <div ref={containerRef}></div>;
+  },
+);
 
 export default QuillEditor;
 
