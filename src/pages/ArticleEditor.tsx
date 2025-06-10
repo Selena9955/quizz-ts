@@ -6,7 +6,11 @@ import InputField from "@/components/InputField";
 import { Label } from "@/components/ui/label";
 import TagsInput from "@/components/TagsInput";
 import { Badge } from "@/components/ui/badge";
-import { createArticle, getArticleById } from "@/api/article.api";
+import {
+  createArticle,
+  getArticleById,
+  updateArticle,
+} from "@/api/article.api";
 import { useParams, useNavigate } from "react-router";
 
 function ArticleNew() {
@@ -42,11 +46,13 @@ function ArticleNew() {
       tags: selectedTags,
     };
     try {
-      await createArticle(payload);
-      setTitle("");
-      setSelectedTags([]);
-      setEditorValue("");
-      navigate("/articles");
+      if (id) {
+        await updateArticle(id, payload);
+        navigate(`/articles/${id}`);
+      } else {
+        await createArticle(payload);
+        navigate("/articles");
+      }
     } catch (err: any) {
       alert(err.message || "發佈失敗");
     }
@@ -84,9 +90,15 @@ function ArticleNew() {
       </div>
 
       <div className="mt-6 flex justify-end">
-        <Button size="lg" onClick={handleSubmit}>
-          新增文章
-        </Button>
+        {id ? (
+          <Button size="lg" onClick={handleSubmit}>
+            保存修改
+          </Button>
+        ) : (
+          <Button size="lg" onClick={handleSubmit}>
+            新增文章
+          </Button>
+        )}
       </div>
     </div>
   );

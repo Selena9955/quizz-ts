@@ -78,3 +78,24 @@ export async function deleteArticle(id: string | number) {
     throw err;
   }
 }
+export async function updateArticle(
+  id: string | number,
+  payload: CreateArticlePayload,
+) {
+  try {
+    const res = await fetch(`${API_BASE}/articles/${id}/edit`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include", // 若需要攜帶 cookie
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const resData = await res.json();
+      throw new Error(resData.message || "文章更新失敗");
+    }
+  } catch (err) {
+    console.error("updateArticle error:", err);
+    throw err;
+  }
+}
