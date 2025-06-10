@@ -13,6 +13,7 @@ import Register from "./pages/Register.tsx";
 import Verify from "./pages/Verify.tsx";
 import AuthLayout from "./components/AuthLayout.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
+import ArticleDetail from "./pages/ArticleDetail.tsx";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
             Component: Articles,
           },
           { path: "articles/new", Component: ArticleNew },
+          { path: "articles/:id", Component: ArticleDetail },
           { path: "tags", Component: Tags },
         ],
       },
@@ -48,6 +50,6 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <AuthProvider>
-    <RouterProvider router={router} />,
+    <RouterProvider router={router} />
   </AuthProvider>,
 );

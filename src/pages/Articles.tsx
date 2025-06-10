@@ -1,8 +1,20 @@
 import { Sparkle, Flame } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ArticleCard from "@/components/ArticleCard";
+import { useEffect, useState } from "react";
+import { getAllArticles } from "@/api/article.api";
+import type { ArticleListType } from "@/types/article.types";
 
 function Articles() {
+  const [articles, setArticles] = useState<ArticleListType[]>([]);
+  useEffect(() => {
+    async function fetchArticles() {
+      const data = await getAllArticles();
+      setArticles(data.data);
+      console.log(data);
+    }
+    fetchArticles();
+  }, []);
   return (
     <div>
       <Tabs defaultValue="new">
@@ -23,10 +35,15 @@ function Articles() {
           </TabsTrigger>
         </TabsList>
         <div className="bg-muted mt-4 rounded-md p-3">
-          <TabsContent value="new" className="my-2">
-            {Array.from({ length: 10 }).map((_, index) => (
-              <ArticleCard key={index} className="not-last:mb-3" />
-            ))}
+          <TabsContent value="new" className="mt-0 space-y-2">
+            {articles &&
+              articles.map((article, index) => (
+                <ArticleCard
+                  key={index}
+                  article={article}
+                  className="not-last:mb-3"
+                />
+              ))}
           </TabsContent>
           <TabsContent value="hot" className="my-2">
             測試

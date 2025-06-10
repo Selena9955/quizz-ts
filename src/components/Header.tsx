@@ -13,14 +13,6 @@ import { useEffect, useState } from "react";
 import SearchBtn from "./SearchBtn";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useAuth } from "@/context/AuthContext";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "./ui/dialog";
 import { logout } from "@/api/auth.api";
 
 const MenuList = [
