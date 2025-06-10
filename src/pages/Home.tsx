@@ -159,11 +159,11 @@ function Home() {
         <div className="flex-2">
           <h2 className="mb-3 text-lg font-bold">你可能感興趣的文章</h2>
 
-          <div className="bg-muted grid gap-3 rounded-md p-3">
+          {/* <div className="bg-muted grid gap-3 rounded-md p-3">
             {Array.from({ length: 10 }).map((_, index) => (
               <ArticleCard key={index} />
             ))}
-          </div>
+          </div> */}
         </div>
         <div className="flex-1">
           <h2 className="mb-3 text-lg font-bold">推薦用戶</h2>

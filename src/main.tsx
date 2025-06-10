@@ -6,14 +6,14 @@ import Home from "./pages/Home.tsx";
 import Problems from "./pages/Problems.tsx";
 import ProblemNew from "./pages/ProblemNew.tsx";
 import Articles from "./pages/Articles.tsx";
-import ArticleNew from "./pages/ArticleNew.tsx";
+import ArticleEditor from "./pages/ArticleEditor.tsx";
 import Tags from "./pages/Tags.tsx";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 import Verify from "./pages/Verify.tsx";
+import ArticleDetail from "./pages/ArticleDetail.tsx";
 import AuthLayout from "./components/AuthLayout.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
-import ArticleDetail from "./pages/ArticleDetail.tsx";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +30,8 @@ const router = createBrowserRouter([
             path: "articles",
             Component: Articles,
           },
-          { path: "articles/new", Component: ArticleNew },
+          { path: "articles/new", Component: ArticleEditor },
+          { path: "articles/:id/edit", Component: ArticleEditor },
           { path: "articles/:id", Component: ArticleDetail },
           { path: "tags", Component: Tags },
         ],

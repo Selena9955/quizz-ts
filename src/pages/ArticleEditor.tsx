@@ -6,15 +6,32 @@ import InputField from "@/components/InputField";
 import { Label } from "@/components/ui/label";
 import TagsInput from "@/components/TagsInput";
 import { Badge } from "@/components/ui/badge";
-import { createArticle } from "@/api/article.api";
-import { useNavigate } from "react-router";
+import { createArticle, getArticleById } from "@/api/article.api";
+import { useParams, useNavigate } from "react-router";
 
 function ArticleNew() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const editorRef = useRef<QuillEditorRef>(null);
   const [title, setTitle] = useState<string>("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [editorValue, setEditorValue] = useState<string>("");
+
+  // 依據路徑判斷是否要帶入值
+  useEffect(() => {
+    if (id) {
+      getArticleById(id).then((data) => {
+        console.log(data);
+        setTitle(data.data.title);
+        setEditorValue(data.data.content);
+        setSelectedTags(data.data.tags);
+      });
+    } else {
+      setTitle("");
+      setEditorValue("");
+      setSelectedTags([]);
+    }
+  }, [id]);
 
   async function handleSubmit() {
     const plainTextContent = editorRef.current?.getText() || "";
