@@ -3,8 +3,8 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import "./index.css";
 import Layout from "./components/Layout.tsx";
 import Home from "./pages/Home.tsx";
-import Problems from "./pages/Problems.tsx";
-import ProblemNew from "./pages/ProblemNew.tsx";
+import Quizzes from "./pages/Quizzes.tsx";
+import QuizEdit from "./pages/QuizEdit.tsx";
 import Articles from "./pages/Articles.tsx";
 import ArticleEditor from "./pages/ArticleEditor.tsx";
 import Tags from "./pages/Tags.tsx";
@@ -24,8 +24,8 @@ const router = createBrowserRouter([
         Component: Layout,
         children: [
           { index: true, Component: Home },
-          { path: "problems", Component: Problems, children: [] },
-          { path: "problems/new", Component: ProblemNew },
+          { path: "quizzes", Component: Quizzes, children: [] },
+          { path: "quizzes/new", Component: QuizEdit },
           {
             path: "articles",
             Component: Articles,

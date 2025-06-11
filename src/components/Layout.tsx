@@ -7,6 +7,7 @@ function App() {
   const useMutedBg =
     pathname === "/articles" ||
     pathname === "/tags" ||
+    pathname === "/quizzes/new" ||
     /^\/articles\/\d+$/.test(pathname);
   return (
     <>

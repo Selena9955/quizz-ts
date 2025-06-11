@@ -16,7 +16,7 @@ import { useAuth } from "@/context/AuthContext";
 import { logout } from "@/api/auth.api";
 
 const MenuList = [
-  { name: "題庫", path: "/problems" },
+  { name: "題庫", path: "/quizzes" },
   { name: "討論區", path: "/articles" },
   { name: "TAGs", path: "/tags" },
 ];
@@ -83,7 +83,7 @@ function Header() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuItem>
-                        <Link to="/problems/new">新增題目</Link>
+                        <Link to="/quizzes/new">新增題目</Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <Link to="/articles/new">新增討論</Link>
@@ -149,7 +149,7 @@ function Header() {
               </Button>
 
               <Button variant="outline" asChild className="flex-grow">
-                <Link to="/problems/new">新增題目</Link>
+                <Link to="/quizzes/new">新增題目</Link>
               </Button>
             </div>
           )}
