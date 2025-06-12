@@ -34,12 +34,10 @@ function QuizEdit() {
   const [title, setTitle] = useState<string>("");
   const [titleDetail, setTitleDetail] = useState<string>("");
   const [options, setOptions] = useState<Option[]>([{ id: uuid(), text: "" }]);
-  const [singleAnswerId, setSingleAnswerId] = useState<string | null>(null);
-  const [multipleAnswerId, setMultipleAnswerId] = useState<string[] | null>(
-    null,
-  );
-  const [flashAnswer, setFlashAnswer] = useState<string | null>("");
-  const [answerDetail, setAnswerDetail] = useState<string | null>("");
+  const [singleAnswerId, setSingleAnswerId] = useState<string>("");
+  const [multipleAnswerId, setMultipleAnswerId] = useState<string[]>([]);
+  const [flashAnswer, setFlashAnswer] = useState<string>("");
+  const [answerDetail, setAnswerDetail] = useState<string>("");
 
   const typeButton = quizTypeOptions.find(
     (opt) => opt.value === quizType,
@@ -64,11 +62,11 @@ function QuizEdit() {
     setOptions(options);
   }, []);
 
-  const handleSingleAnswerChange = useCallback((id: string | null) => {
+  const handleSingleAnswerChange = useCallback((id: string) => {
     setSingleAnswerId(id);
   }, []);
 
-  const handleMultipleAnswerChange = useCallback((id: string[] | null) => {
+  const handleMultipleAnswerChange = useCallback((id: string[]) => {
     setMultipleAnswerId(id);
   }, []);
 

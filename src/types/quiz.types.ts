@@ -11,13 +11,13 @@ export const QuizTypeType = {
 
 export type QuizTypeValue = (typeof QuizTypeType)[keyof typeof QuizTypeType];
 
-export type QuizValidationInput = {
+export type QuizSubmit = {
   quizType: QuizTypeValue;
   title: string;
-  titleDetail: string | null;
+  titleDetail: string;
   options: Option[];
-  singleAnswerId: string | null;
-  multipleAnswerId: string[] | null;
-  flashAnswer: string | null;
-  answerDetail: string | null;
+  singleAnswerId: string;
+  multipleAnswerId: string[];
+  flashAnswer: string;
+  answerDetail: string;
 };

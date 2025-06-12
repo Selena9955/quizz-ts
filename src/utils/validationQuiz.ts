@@ -1,6 +1,6 @@
-import { QuizTypeType, type QuizValidationInput } from "@/types/quiz.types";
+import { QuizTypeType, type QuizSubmit } from "@/types/quiz.types";
 
-export function validateQuizData(data: QuizValidationInput): string | null {
+export function validateQuizData(data: QuizSubmit): string | null {
   const {
     quizType,
     title,

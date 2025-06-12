@@ -20,8 +20,8 @@ type OptEditProps = {
   quizType: QuizTypeValue;
   options: Option[];
   onOptionsChange: (options: Option[]) => void;
-  onSingleAnswerChange?: (id: string | null) => void;
-  onMultipleAnswerChange?: (ids: string[] | null) => void;
+  onSingleAnswerChange?: (id: string) => void;
+  onMultipleAnswerChange?: (ids: string[]) => void;
 };
 
 function OptEdit({
@@ -38,7 +38,7 @@ function OptEdit({
       onSingleAnswerChange?.(correctAnswerId[0] ?? null);
     } else if (quizType === QuizTypeType.Multiple) {
       onMultipleAnswerChange?.(
-        correctAnswerId.length > 0 ? correctAnswerId : null,
+        correctAnswerId.length > 0 ? correctAnswerId : [],
       );
     }
   }, [correctAnswerId, quizType]);
