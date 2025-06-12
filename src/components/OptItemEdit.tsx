@@ -34,7 +34,7 @@ function SingleOptItemEdit({
       style={style}
       className="flex w-full touch-none items-center gap-2"
     >
-      <span {...listeners} className="cursor-pointer">
+      <span {...listeners} className="-mr-2 cursor-pointer text-gray-300">
         <GripVertical />
       </span>
       {quizType == 0 && (

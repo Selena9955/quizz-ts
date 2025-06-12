@@ -19,6 +19,8 @@ import { Textarea } from "@/components/ui/textarea";
 import OptEdit from "@/components/OptEdit";
 import FlashOptEdit from "@/components/FlashOptEdit";
 import { validateQuizData } from "@/utils/validationQuiz";
+import TagsInput from "@/components/TagsInput";
+import { createQuiz } from "@/api/quiz.api";
 
 const quizTypeOptions: { label: string; value: QuizTypeValue }[] = [
   { label: "單選題", value: QuizTypeType.Single },
@@ -38,6 +40,8 @@ function QuizEdit() {
   const [multipleAnswerId, setMultipleAnswerId] = useState<string[]>([]);
   const [flashAnswer, setFlashAnswer] = useState<string>("");
   const [answerDetail, setAnswerDetail] = useState<string>("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [errMsg, setErrMsg] = useState<string>("");
 
   const typeButton = quizTypeOptions.find(
     (opt) => opt.value === quizType,
@@ -80,10 +84,11 @@ function QuizEdit() {
       multipleAnswerId,
       flashAnswer,
       answerDetail,
+      tags,
     });
 
     if (error) {
-      alert(error);
+      setErrMsg(error);
       return;
     }
     const payload = {
@@ -95,8 +100,25 @@ function QuizEdit() {
       multipleAnswerId: multipleAnswerId,
       flashAnswer: flashAnswer,
       answerDetail: answerDetail,
+      tags: tags,
     };
-    console.log(payload);
+
+    try {
+      createQuiz(payload);
+
+      setQuizType(QuizTypeType.Single);
+      setTitle("");
+      setTitleDetail("");
+      setOptions([]);
+      setSingleAnswerId("");
+      setMultipleAnswerId([]);
+      setFlashAnswer("");
+      setAnswerDetail("");
+      setTags([]);
+      setErrMsg("");
+    } catch (err) {
+      alert("新增失敗，請稍後再嘗試");
+    }
   }
 
   return (
@@ -176,10 +198,14 @@ function QuizEdit() {
             onChange={(e) => setAnswerDetail(e.target.value)}
           />
         </section>
+        <section className="mt-10 space-y-3">
+          <Label className="text-secondary">標籤分類</Label>
+          <TagsInput selectedTags={tags} onChangeSelectedTags={setTags} />
+        </section>
       </div>
       <div className="fixed bottom-0 left-1/2 w-full max-w-200 -translate-x-1/2">
         <div className="mx-3 flex items-center justify-between gap-2 rounded-tl-lg rounded-tr-lg bg-white p-3">
-          <p>test</p>
+          <p className="text-danger font-semibold">*{errMsg}</p>
           <Button onClick={handleNewSubmit}>新增</Button>
         </div>
       </div>

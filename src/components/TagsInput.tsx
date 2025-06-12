@@ -55,9 +55,13 @@ function TagsInput({ selectedTags, onChangeSelectedTags }: TagsInputProps) {
   }
   return (
     <div>
-      <Button variant="outline" onClick={handleOpenTagDialog}>
-        管理標籤 +
-      </Button>
+      <div className="flex flex-wrap gap-1">
+        {selectedTags &&
+          selectedTags.map((tag, index) => <Badge key={index}>{tag}</Badge>)}
+        <Button variant="outline" onClick={handleOpenTagDialog}>
+          管理標籤 +
+        </Button>
+      </div>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput

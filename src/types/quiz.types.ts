@@ -11,7 +11,7 @@ export const QuizTypeType = {
 
 export type QuizTypeValue = (typeof QuizTypeType)[keyof typeof QuizTypeType];
 
-export type QuizSubmit = {
+export type QuizSubmitData = {
   quizType: QuizTypeValue;
   title: string;
   titleDetail: string;
@@ -20,4 +20,5 @@ export type QuizSubmit = {
   multipleAnswerId: string[];
   flashAnswer: string;
   answerDetail: string;
+  tags: string[];
 };

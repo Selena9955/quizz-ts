@@ -5,7 +5,6 @@ import QuillEditor, { type QuillEditorRef } from "@/components/QuillEditor";
 import InputField from "@/components/InputField";
 import { Label } from "@/components/ui/label";
 import TagsInput from "@/components/TagsInput";
-import { Badge } from "@/components/ui/badge";
 import {
   createArticle,
   getArticleById,
@@ -77,16 +76,12 @@ function ArticleNew() {
         ref={editorRef}
       />
 
-      <div>
-        <h6 className="mt-5 mb-2 font-semibold">標籤</h6>
-        <div className="flex flex-wrap gap-1">
-          {selectedTags &&
-            selectedTags.map((tag, index) => <Badge key={index}>{tag}</Badge>)}
-          <TagsInput
-            selectedTags={selectedTags}
-            onChangeSelectedTags={setSelectedTags}
-          />
-        </div>
+      <div className="mt-5 space-y-3">
+        <h6 className="font-semibold">標籤</h6>
+        <TagsInput
+          selectedTags={selectedTags}
+          onChangeSelectedTags={setSelectedTags}
+        />
       </div>
 
       <div className="mt-6 flex justify-end">

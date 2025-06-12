@@ -90,7 +90,10 @@ function OptEdit({
         {quizType === 1 && "多選題"}
         選項
       </Label>
-      <p className="text-muted-foreground"> 請選擇一個選項作為解答</p>
+      <p className="text-muted-foreground">
+        請選擇{quizType === 0 ? "一" : "至少一"}
+        個選項作為解答，最少需要兩個選項
+      </p>
 
       <RadioGroup defaultValue="" className="my-4">
         <DndContext

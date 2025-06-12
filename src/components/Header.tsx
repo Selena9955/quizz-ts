@@ -29,8 +29,8 @@ function Header() {
   const [navOpened, setNavOpened] = useState(false);
 
   // 判斷是否登入
-  // const isLoggedIn = user !== null;
-  const isLoggedIn = true;
+  const isLoggedIn = user !== null;
+  // const isLoggedIn = true;
 
   useEffect(() => {
     // 每次路由變化就關閉選單

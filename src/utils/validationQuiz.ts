@@ -1,6 +1,6 @@
-import { QuizTypeType, type QuizSubmit } from "@/types/quiz.types";
+import { QuizTypeType, type QuizSubmitData } from "@/types/quiz.types";
 
-export function validateQuizData(data: QuizSubmit): string | null {
+export function validateQuizData(data: QuizSubmitData): string | null {
   const {
     quizType,
     title,
@@ -8,9 +8,11 @@ export function validateQuizData(data: QuizSubmit): string | null {
     singleAnswerId,
     multipleAnswerId,
     flashAnswer,
+    tags,
   } = data;
 
   if (!title.trim()) return "請填寫標題";
+  if (tags.length === 0) return "請至少選一個標籤";
   const hasEmptyOption = options.some((opt) => !opt.text.trim());
 
   switch (quizType) {
