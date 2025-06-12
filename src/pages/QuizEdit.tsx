@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import { v4 as uuid } from "uuid";
 import {
   QuizTypeType,
@@ -19,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import OptEdit from "@/components/OptEdit";
 import FlashOptEdit from "@/components/FlashOptEdit";
 import { validateQuizData } from "@/utils/validationQuiz";
+import { Checkbox } from "@/components/ui/checkbox";
 import TagsInput from "@/components/TagsInput";
 import { createQuiz } from "@/api/quiz.api";
 
@@ -29,6 +31,7 @@ const quizTypeOptions: { label: string; value: QuizTypeValue }[] = [
 ];
 
 function QuizEdit() {
+  const navigate = useNavigate();
   const titleRef = useRef<HTMLDivElement>(null);
   const titleDetailRef = useRef<QuillEditorRef>(null);
   const flashAnswerRef = useRef<QuillEditorRef>(null);
@@ -42,6 +45,7 @@ function QuizEdit() {
   const [answerDetail, setAnswerDetail] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
   const [errMsg, setErrMsg] = useState<string>("");
+  const [hasMoreAdd, setHasMoreAdd] = useState<boolean>(false);
 
   const typeButton = quizTypeOptions.find(
     (opt) => opt.value === quizType,
@@ -106,19 +110,23 @@ function QuizEdit() {
     try {
       createQuiz(payload);
 
-      setQuizType(QuizTypeType.Single);
       setTitle("");
       setTitleDetail("");
-      setOptions([]);
+      setOptions([{ id: uuid(), text: "" }]);
       setSingleAnswerId("");
       setMultipleAnswerId([]);
       setFlashAnswer("");
       setAnswerDetail("");
       setTags([]);
       setErrMsg("");
+      if (!hasMoreAdd) {
+        setQuizType(QuizTypeType.Single);
+        navigate("/quizzes");
+      }
     } catch (err) {
       alert("新增失敗，請稍後再嘗試");
     }
+    console.log(hasMoreAdd);
   }
 
   return (
@@ -206,7 +214,14 @@ function QuizEdit() {
       <div className="fixed bottom-0 left-1/2 w-full max-w-200 -translate-x-1/2">
         <div className="mx-3 flex items-center justify-between gap-2 rounded-tl-lg rounded-tr-lg bg-white p-3">
           <p className="text-danger font-semibold">*{errMsg}</p>
-          <Button onClick={handleNewSubmit}>新增</Button>
+          <div className="flex items-center">
+            <Checkbox
+              checked={hasMoreAdd}
+              onCheckedChange={(checked) => setHasMoreAdd(checked === true)}
+            />
+            <p className="mr-4 ml-1">繼續新增</p>
+            <Button onClick={handleNewSubmit}>新增</Button>
+          </div>
         </div>
       </div>
     </>

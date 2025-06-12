@@ -10,7 +10,7 @@ import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import ArticleCard from "@/components/ArticleCard";
 import ActivityPreview from "@/components/ActivityPreview";
-import ProblemCard from "@/components/ProblemCard";
+import QuizCard from "@/components/QuizCard";
 import { useAuth } from "@/context/AuthContext";
 
 function Home() {
@@ -149,7 +149,7 @@ function Home() {
         >
           {Array.from({ length: 5 }).map((_, index) => (
             <SwiperSlide style={{ width: "auto" }} key={index}>
-              <ProblemCard />
+              <QuizCard />
             </SwiperSlide>
           ))}
         </Swiper>

@@ -11,6 +11,12 @@ export const QuizTypeType = {
 
 export type QuizTypeValue = (typeof QuizTypeType)[keyof typeof QuizTypeType];
 
+export const QuizTypeLabels: Record<QuizTypeValue, string> = {
+  [QuizTypeType.Single]: "單選題",
+  [QuizTypeType.Multiple]: "多選題",
+  [QuizTypeType.Flash]: "單字卡",
+};
+
 export type QuizSubmitData = {
   quizType: QuizTypeValue;
   title: string;
@@ -20,5 +26,14 @@ export type QuizSubmitData = {
   multipleAnswerId: string[];
   flashAnswer: string;
   answerDetail: string;
+  tags: string[];
+};
+
+export type QuizListData = {
+  id: number;
+  authorId: number;
+  authorName: string;
+  quizType: QuizTypeValue;
+  title: string;
   tags: string[];
 };

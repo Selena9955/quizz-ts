@@ -19,3 +19,19 @@ export async function createQuiz(payload: QuizSubmitData) {
     console.error("createQuiz error:", err);
   }
 }
+
+export async function getAllQuizzes() {
+  try {
+    const res = await fetch(`${API_BASE}/quizzes`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    const resData = await res.json();
+    if (!res.ok) {
+      throw new Error(resData.message || "取得失敗");
+    }
+    return resData;
+  } catch (err) {
+    console.error("getAllQ error:", err);
+  }
+}
