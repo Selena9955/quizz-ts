@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
 import OptEdit from "@/components/OptEdit";
+import FlashOptEdit from "@/components/FlashOptEdit";
+import { validateQuizData } from "@/utils/validationQuiz";
 
 const quizTypeOptions: { label: string; value: QuizTypeValue }[] = [
   { label: "單選題", value: QuizTypeType.Single },
@@ -27,6 +29,7 @@ const quizTypeOptions: { label: string; value: QuizTypeValue }[] = [
 function QuizEdit() {
   const titleRef = useRef<HTMLDivElement>(null);
   const titleDetailRef = useRef<QuillEditorRef>(null);
+  const flashAnswerRef = useRef<QuillEditorRef>(null);
   const [quizType, setQuizType] = useState<QuizTypeValue>(QuizTypeType.Single);
   const [title, setTitle] = useState<string>("");
   const [titleDetail, setTitleDetail] = useState<string>("");
@@ -35,7 +38,8 @@ function QuizEdit() {
   const [multipleAnswerId, setMultipleAnswerId] = useState<string[] | null>(
     null,
   );
-  const [answerDetail, setAnswerDetail] = useState<string>();
+  const [flashAnswer, setFlashAnswer] = useState<string | null>("");
+  const [answerDetail, setAnswerDetail] = useState<string | null>("");
 
   const typeButton = quizTypeOptions.find(
     (opt) => opt.value === quizType,
@@ -69,6 +73,21 @@ function QuizEdit() {
   }, []);
 
   function handleNewSubmit() {
+    const error = validateQuizData({
+      quizType,
+      title,
+      titleDetail,
+      options,
+      singleAnswerId,
+      multipleAnswerId,
+      flashAnswer,
+      answerDetail,
+    });
+
+    if (error) {
+      alert(error);
+      return;
+    }
     const payload = {
       quizType: quizType,
       title: title,
@@ -76,6 +95,7 @@ function QuizEdit() {
       options: options,
       singleAnswerId: singleAnswerId,
       multipleAnswerId: multipleAnswerId,
+      flashAnswer: flashAnswer,
       answerDetail: answerDetail,
     };
     console.log(payload);
@@ -122,9 +142,9 @@ function QuizEdit() {
           </div>
           <Label className="text-secondary mt-4 mb-2">題目描述</Label>
           <QuillEditor
+            ref={titleDetailRef}
             value={titleDetail}
             onChange={setTitleDetail}
-            ref={titleDetailRef}
           />
         </section>
 
@@ -144,7 +164,14 @@ function QuizEdit() {
             onMultipleAnswerChange={handleMultipleAnswerChange}
           />
         )}
-        <section>
+        {quizType === 2 && (
+          <FlashOptEdit
+            ref={flashAnswerRef}
+            value={flashAnswer}
+            onChange={setFlashAnswer}
+          />
+        )}
+        <section className="mt-10">
           <Label className="text-secondary mt-4 mb-2">解答補充</Label>
           <Textarea
             value={answerDetail}
