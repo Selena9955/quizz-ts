@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { v4 as uuid } from "uuid";
 import {
   QuizTypeType,
   type Option,
@@ -14,8 +15,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import SingleOptEdit from "@/components/SingleOptEdit";
-import MultipleOptEdit from "@/components/MultipleOptEdit";
+import { Textarea } from "@/components/ui/textarea";
+import OptEdit from "@/components/OptEdit";
 
 const quizTypeOptions: { label: string; value: QuizTypeValue }[] = [
   { label: "單選題", value: QuizTypeType.Single },
@@ -28,9 +29,13 @@ function QuizEdit() {
   const titleDetailRef = useRef<QuillEditorRef>(null);
   const [quizType, setQuizType] = useState<QuizTypeValue>(QuizTypeType.Single);
   const [title, setTitle] = useState<string>("");
-  const [options, setOptions] = useState<Option[]>([]);
-  const [singleAnswerId, setSingleAnswerId] = useState<string | null>(null);
   const [titleDetail, setTitleDetail] = useState<string>("");
+  const [options, setOptions] = useState<Option[]>([{ id: uuid(), text: "" }]);
+  const [singleAnswerId, setSingleAnswerId] = useState<string | null>(null);
+  const [multipleAnswerId, setMultipleAnswerId] = useState<string[] | null>(
+    null,
+  );
+  const [answerDetail, setAnswerDetail] = useState<string>();
 
   const typeButton = quizTypeOptions.find(
     (opt) => opt.value === quizType,
@@ -55,8 +60,12 @@ function QuizEdit() {
     setOptions(options);
   }, []);
 
-  const handleAnswerChange = useCallback((id: string | null) => {
+  const handleSingleAnswerChange = useCallback((id: string | null) => {
     setSingleAnswerId(id);
+  }, []);
+
+  const handleMultipleAnswerChange = useCallback((id: string[] | null) => {
+    setMultipleAnswerId(id);
   }, []);
 
   function handleNewSubmit() {
@@ -66,6 +75,8 @@ function QuizEdit() {
       titleDetail: titleDetail,
       options: options,
       singleAnswerId: singleAnswerId,
+      multipleAnswerId: multipleAnswerId,
+      answerDetail: answerDetail,
     };
     console.log(payload);
   }
@@ -118,12 +129,28 @@ function QuizEdit() {
         </section>
 
         {quizType === 0 && (
-          <SingleOptEdit
+          <OptEdit
+            quizType={quizType}
+            options={options}
             onOptionsChange={handleOptionsChange}
-            onAnswerChange={handleAnswerChange}
+            onSingleAnswerChange={handleSingleAnswerChange}
           />
         )}
-        {quizType === 1 && <MultipleOptEdit />}
+        {quizType === 1 && (
+          <OptEdit
+            quizType={quizType}
+            options={options}
+            onOptionsChange={handleOptionsChange}
+            onMultipleAnswerChange={handleMultipleAnswerChange}
+          />
+        )}
+        <section>
+          <Label className="text-secondary mt-4 mb-2">解答補充</Label>
+          <Textarea
+            value={answerDetail}
+            onChange={(e) => setAnswerDetail(e.target.value)}
+          />
+        </section>
       </div>
       <div className="fixed bottom-0 left-1/2 w-full max-w-200 -translate-x-1/2">
         <div className="mx-3 flex items-center justify-between gap-2 rounded-tl-lg rounded-tr-lg bg-white p-3">
