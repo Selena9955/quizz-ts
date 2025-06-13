@@ -46,14 +46,14 @@ function OptItem({
     const isCorrect = currAnswers.includes(id) || currAnswer.includes(id);
     const isSelected = selectedAnswers.includes(id);
 
+    if (!isSelected && !isCorrect) return "";
+
     if (showAnswer) {
-      if (isSelected) {
-        return isCorrect ? "bg-primary/40" : "bg-red-100";
-      }
+      if (isSelected && isCorrect) return "bg-primary/40";
+      if (!isSelected && isCorrect) return "bg-primary/40";
+      if (isSelected && !isCorrect) return "bg-red-100";
     } else {
-      if (isSelected) {
-        return "bg-gray-200"; // 未公布前顯示灰色
-      }
+      if (isSelected) return "bg-gray-200";
     }
   }
 

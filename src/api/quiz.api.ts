@@ -50,3 +50,20 @@ export async function getQuizById(id: string | undefined) {
     console.error("getQuiz error:", err);
   }
 }
+
+export async function deleteQuizById(id: number) {
+  console.log(id);
+
+  try {
+    const res = await fetch(`${API_BASE}/quizzes/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    const resData = await res.json();
+    if (!res.ok) {
+      throw new Error(resData.message || "刪除失敗");
+    }
+  } catch (err) {
+    console.error("deleteQuiz error:", err);
+  }
+}

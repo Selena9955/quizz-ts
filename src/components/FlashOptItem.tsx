@@ -1,11 +1,17 @@
 type FlashOptItemProps = {
   flashAnswer: string;
+  showAnswer: boolean;
 };
 
-function FlashOptItem({ flashAnswer }: FlashOptItemProps) {
+function FlashOptItem({ flashAnswer, showAnswer }: FlashOptItemProps) {
   return (
     <div>
-      <div dangerouslySetInnerHTML={{ __html: flashAnswer }} />
+      {showAnswer && (
+        <div
+          className="[&_img]:mx-auto [&_img]:block"
+          dangerouslySetInnerHTML={{ __html: flashAnswer }}
+        />
+      )}
     </div>
   );
 }

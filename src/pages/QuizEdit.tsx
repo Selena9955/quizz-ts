@@ -121,12 +121,11 @@ function QuizEdit() {
       setErrMsg("");
       if (!hasMoreAdd) {
         setQuizType(QuizTypeType.Single);
-        navigate("/quizzes");
+        navigate("/quizzes", { state: { shouldRefresh: true } });
       }
     } catch (err) {
       alert("新增失敗，請稍後再嘗試");
     }
-    console.log(hasMoreAdd);
   }
 
   return (

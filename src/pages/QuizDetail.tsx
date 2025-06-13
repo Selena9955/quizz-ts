@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { getQuizById } from "@/api/quiz.api";
+import { deleteQuizById, getQuizById } from "@/api/quiz.api";
 import { QuizTypeType, type QuizDetailData } from "@/types/quiz.types";
 import { useAuth } from "@/context/AuthContext";
 import OptItem from "@/components/OptItem";
@@ -47,15 +47,24 @@ function QuizDetail() {
     fetchData();
   }, []);
 
+  if (!quiz) return <p>載入中...</p>;
+
   async function handleDelete(id: number) {
     if (!confirm("確定要刪除這篇嗎？")) return;
+
+    try {
+      await deleteQuizById(id);
+    } catch (error) {
+      alert("刪除失拜，請稍後嘗試");
+    }
   }
 
   function handleShowAnswer() {
+    if (quiz?.quizType !== QuizTypeType.Flash && selectedAnswers.length === 0) {
+      return;
+    }
     setShowAnswer(true);
   }
-
-  if (!quiz) return <p>載入中...</p>;
 
   return (
     <article className="rounded-md bg-white p-3 md:p-8 lg:mx-20">
@@ -90,7 +99,10 @@ function QuizDetail() {
 
       <h1 className="my-3 text-3xl font-bold">{quiz.title}</h1>
 
-      <div dangerouslySetInnerHTML={{ __html: quiz.titleDetail }} />
+      <div
+        className="[&_img]:mx-auto [&_img]:block"
+        dangerouslySetInnerHTML={{ __html: quiz.titleDetail }}
+      />
       <hr className="my-6" />
 
       {quiz.quizType === QuizTypeType.Single && (
@@ -114,13 +126,17 @@ function QuizDetail() {
         />
       )}
       {quiz.quizType === QuizTypeType.Flash && (
-        <FlashOptItem flashAnswer={quiz.flashAnswer} />
+        <FlashOptItem flashAnswer={quiz.flashAnswer} showAnswer={showAnswer} />
       )}
 
       {!showAnswer && (
         <div className="mt-8 text-center">
-          <Button className="w-full md:max-w-100" onClick={handleShowAnswer}>
-            確定
+          <Button
+            className="w-full md:max-w-100"
+            variant="outline"
+            onClick={handleShowAnswer}
+          >
+            查看解答
           </Button>
         </div>
       )}
