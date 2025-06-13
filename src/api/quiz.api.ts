@@ -35,3 +35,18 @@ export async function getAllQuizzes() {
     console.error("getAllQ error:", err);
   }
 }
+
+export async function getQuizById(id: string | undefined) {
+  try {
+    const res = await fetch(`${API_BASE}/quizzes/${id}`, {
+      method: "GET",
+    });
+    const resData = await res.json();
+    if (!res.ok) {
+      throw new Error(resData.message || "取得失敗");
+    }
+    return resData;
+  } catch (err) {
+    console.error("getQuiz error:", err);
+  }
+}

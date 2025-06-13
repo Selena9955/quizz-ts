@@ -1,3 +1,5 @@
+import type { TagData } from "./tag.types";
+
 export type Option = {
   id: string;
   text: string;
@@ -36,4 +38,20 @@ export type QuizListData = {
   quizType: QuizTypeValue;
   title: string;
   tags: string[];
+};
+
+export type QuizDetailData = {
+  id: number;
+  quizType: QuizTypeValue;
+  title: string;
+  titleDetail: string;
+  answerDetail: string;
+  tags: TagData[];
+  authorName: string;
+  createTime: string;
+  updateTime: string;
+  options: Option[];
+  singleAnswerId: string;
+  multipleAnswerId: string[];
+  flashAnswer: string;
 };
