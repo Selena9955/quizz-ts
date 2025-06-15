@@ -1,5 +1,5 @@
 import { Link, NavLink, useLocation, useNavigate } from "react-router";
-import { Menu } from "lucide-react";
+import { Menu, EllipsisVertical } from "lucide-react";
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -27,6 +27,7 @@ function Header() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const { user, setUser } = useAuth();
   const [navOpened, setNavOpened] = useState(false);
+  const [imgSrc, setImgSrc] = useState<string>("/default-avatar.jpg");
 
   // 判斷是否登入
   const isLoggedIn = user !== null;
@@ -90,15 +91,19 @@ function Header() {
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
+                  <Link
+                    to={`/users/${user.username}`}
+                    className="flex items-center gap-2"
+                  >
+                    <Avatar>
+                      <AvatarImage src={imgSrc} />
+                      <AvatarFallback>err</AvatarFallback>
+                    </Avatar>
+                    <p>{user.username}</p>
+                  </Link>
                   <DropdownMenu modal={false}>
                     <DropdownMenuTrigger>
-                      <Avatar>
-                        <AvatarImage
-                          src="https://github.com/.png"
-                          alt="@shadcn"
-                        />
-                        <AvatarFallback>U</AvatarFallback>
-                      </Avatar>
+                      <EllipsisVertical />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuItem>設定</DropdownMenuItem>

@@ -10,9 +10,11 @@ import {
 interface User {
   id: number;
   username: string;
-  email: string;
   status: string;
   role: string;
+  bio: string;
+  avatarImg: string;
+  profileImg: string;
 }
 
 interface AuthContextType {

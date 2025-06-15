@@ -16,3 +16,22 @@ export type LoginFormData = {
   email: string;
   password: string;
 };
+
+export type ProfileData = {
+  id: number;
+  username: string;
+  bio: string;
+  avatarUrl: string;
+  bgUrl: string;
+  quizCount: number;
+  articleCount: number;
+  followers: number;
+};
+
+export type ProfileFormData = {
+  id: number;
+  username: string;
+  bio: string;
+  avatarUrl: string;
+  bgUrl: string;
+};
