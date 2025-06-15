@@ -36,3 +36,37 @@ export async function updateProfile(payload: ProfileFormData) {
 
   return resData;
 }
+
+export async function getUserArticles(username: string) {
+  try {
+    const res = await fetch(`${API_BASE}/users/${username}/articles`, {
+      method: "GET",
+    });
+    const resData = await res.json();
+    if (!res.ok) {
+      throw new Error(resData.message || "取得失敗");
+    }
+
+    return resData.data;
+  } catch (err) {
+    console.log("getUserArticles -", err);
+    throw err;
+  }
+}
+
+export async function getUserQuizzes(username: string) {
+  try {
+    const res = await fetch(`${API_BASE}/users/${username}/quizzes`, {
+      method: "GET",
+    });
+    const resData = await res.json();
+    if (!res.ok) {
+      throw new Error(resData.message || "取得失敗");
+    }
+
+    return resData.data;
+  } catch (err) {
+    console.log("getUserQuizzes -", err);
+    throw err;
+  }
+}

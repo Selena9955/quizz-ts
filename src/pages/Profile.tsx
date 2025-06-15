@@ -1,15 +1,20 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router";
 import type { ArticleListType } from "@/types/article.types";
 import type { QuizListData } from "@/types/quiz.types";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import ProfileEditDialog from "@/components/ProfileEditDialog";
 import type { ProfileData } from "@/types/auth.types";
-import { getUserProfileById } from "@/api/user.api";
-import { useParams } from "react-router";
-import LoadingIcon from "@/components/LoadingIcon";
 import { useAuth } from "@/context/AuthContext";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ProfileEditDialog from "@/components/ProfileEditDialog";
+import LoadingIcon from "@/components/LoadingIcon";
+import QuizCard from "@/components/QuizCard";
+import ArticleCard from "@/components/ArticleCard";
+import {
+  getUserArticles,
+  getUserProfileById,
+  getUserQuizzes,
+} from "@/api/user.api";
 
 type StatItem = {
   label: string;
@@ -31,11 +36,16 @@ function Profile() {
   const { username } = useParams();
   const [profile, setProfile] = useState<ProfileData>(defaultProfile);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [stats, setStats] = useState<StatItem[]>([
-    { label: "文章數", value: "0" },
-    { label: "題目數", value: "0" },
-    { label: "粉絲數", value: "0" },
-  ]);
+  const [statsMap, setStatsMap] = useState(
+    new Map<string, string>([
+      ["文章數", formatNumber(0)],
+      ["題目數", formatNumber(0)],
+      ["粉絲數", formatNumber(0)],
+    ]),
+  );
+  const [quizzes, setQuizzes] = useState<QuizListData[] | null>(null);
+  const [articles, setArticles] = useState<ArticleListType[] | null>(null);
+  const [activeTab, setActiveTab] = useState<string>("quizzes");
 
   useEffect(() => {
     if (!username) return;
@@ -45,11 +55,13 @@ function Profile() {
         setIsLoading(true);
         const resData = await getUserProfileById(username!);
         setProfile(resData);
-        setStats([
-          { label: "文章數", value: formatNumber(resData.articleCount ?? 0) },
-          { label: "題目數", value: formatNumber(resData.quizCount ?? 0) },
-          { label: "粉絲數", value: formatNumber(resData.followers ?? 0) },
-        ]);
+        setStatsMap(
+          new Map<string, string>([
+            ["文章數", formatNumber(resData.articleCount ?? 0)],
+            ["題目數", formatNumber(resData.quizCount ?? 0)],
+            ["粉絲數", formatNumber(resData.followers ?? 0)],
+          ]),
+        );
       } catch (err) {
         console.error(err);
       } finally {
@@ -58,6 +70,36 @@ function Profile() {
     }
     fetchData();
   }, [username]);
+
+  useEffect(() => {
+    fetchQuizzes();
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === "articles") {
+      fetchArticles(); // 每次點擊都重新載入
+    } else if (activeTab === "quizzes") {
+      fetchQuizzes(); // 若希望切回也更新，可放這裡
+    }
+  }, [activeTab]);
+
+  async function fetchQuizzes() {
+    try {
+      const data = await getUserQuizzes(username!); // 自定 API function
+      setQuizzes(data);
+    } catch (err) {
+      console.error("Failed to load quizzes", err);
+    }
+  }
+
+  async function fetchArticles() {
+    try {
+      const data = await getUserArticles(username!); // 自定 API function
+      setArticles(data);
+    } catch (err) {
+      console.error("Failed to load articles", err);
+    }
+  }
 
   function formatNumber(num: number): string {
     const n = Number(num);
@@ -109,17 +151,15 @@ function Profile() {
               }}
             ></p>
             <div className="mt-10 grid grid-cols-2 space-y-8 md:grid-cols-3">
-              {stats.map((stat, index) => (
+              {Array.from(statsMap.entries()).map(([label, value]) => (
                 <div
-                  key={index}
+                  key={label}
                   className="text-center first:border-r md:border-r md:last:border-r-0"
                 >
                   <div className="text-secondary text-xl font-bold">
-                    {stat.value}
+                    {value}
                   </div>
-                  <div className="text-muted-foreground text-sm">
-                    {stat.label}
-                  </div>
+                  <div className="text-muted-foreground text-sm">{label}</div>
                 </div>
               ))}
             </div>
@@ -127,26 +167,46 @@ function Profile() {
         </section>
       )}
 
-      {/* <section className="mt-8 lg:mx-40">
+      <section className="mt-8 min-h-100 lg:mx-40">
         <Tabs defaultValue="quizzes">
           <TabsList>
-            <TabsTrigger value="quizzes">題目</TabsTrigger>
-            <TabsTrigger value="articles">文章</TabsTrigger>
+            <TabsTrigger
+              value="quizzes"
+              onClick={() => setActiveTab("quizzes")}
+            >
+              題目
+            </TabsTrigger>
+            <TabsTrigger
+              value="articles"
+              onClick={() => setActiveTab("articles")}
+            >
+              文章
+            </TabsTrigger>
           </TabsList>
-          <TabsContent
-            value="quizzes"
-            className="grid min-h-40 place-items-center"
-          >
-            {quizzes && quizzes.length > 0 ? <></> : <p>尚未發表任何題目</p>}
+
+          <TabsContent value="quizzes" className="space-y-3">
+            {quizzes && quizzes.length > 0 ? (
+              quizzes.map((quiz) => <QuizCard key={quiz.id} quiz={quiz} />)
+            ) : (
+              <div className="grid min-h-40 place-items-center">
+                <p>尚未發表任何題目</p>
+              </div>
+            )}
           </TabsContent>
-          <TabsContent
-            value="articles"
-            className="grid min-h-40 place-items-center"
-          >
-            {articles && articles.length > 0 ? <></> : <p>尚未發表任何文章</p>}
+
+          <TabsContent value="articles" className="space-y-3">
+            {articles && articles.length > 0 ? (
+              articles.map((article, index) => (
+                <ArticleCard key={index} article={article} />
+              ))
+            ) : (
+              <div className="grid min-h-40 place-items-center">
+                <p>尚未發表任何文章</p>
+              </div>
+            )}
           </TabsContent>
         </Tabs>
-      </section> */}
+      </section>
     </>
   );
 }
