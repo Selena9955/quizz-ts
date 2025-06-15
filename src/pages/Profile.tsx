@@ -20,7 +20,7 @@ const defaultProfile = {
   username: "預設模板",
   bio: "暫無個人簡介",
   avatarUrl: "",
-  bgUrl: "/default-bg.jpg",
+  profileBgUrl: "/default-bg.jpg",
   quizCount: 0,
   articleCount: 0,
   followers: 0,
@@ -81,7 +81,7 @@ function Profile() {
         <section className="rounded-md bg-white lg:mx-40">
           <div className="h-50 overflow-hidden rounded-t-md md:h-80">
             <img
-              src={profile.bgUrl || "/default-bg.jpg"}
+              src={profile.profileBgUrl || "/default-bg.jpg"}
               alt="profile-bg"
               className="h-full w-full object-cover"
             />
@@ -94,10 +94,20 @@ function Profile() {
             <div className="flex justify-between md:ml-36">
               <h3 className="text-3xl">{profile.username}</h3>
               {user?.id === profile.id && (
-                <ProfileEditDialog profileData={profile} />
+                <ProfileEditDialog
+                  profileData={profile}
+                  onChangeProfile={setProfile}
+                />
               )}
             </div>
-            <p className="mt-4 md:mt-8">{profile.bio || "暫無簡介"}</p>
+
+            <p
+              className="mt-4 whitespace-pre-wrap md:mt-8"
+              //如有換行符號會自動插入<br />
+              dangerouslySetInnerHTML={{
+                __html: (profile.bio || "暫無簡介").replace(/\n/g, "<br />"),
+              }}
+            ></p>
             <div className="mt-10 grid grid-cols-2 space-y-8 md:grid-cols-3">
               {stats.map((stat, index) => (
                 <div

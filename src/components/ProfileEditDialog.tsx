@@ -16,18 +16,27 @@ import { Camera } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import type { ProfileData, ProfileFormData } from "@/types/auth.types";
 import { toast } from "sonner";
+import { updateProfile } from "@/api/user.api";
+import { Label } from "@radix-ui/react-dropdown-menu";
+import { useNavigate } from "react-router";
 
 type ProfileEditDialogProps = {
   profileData: ProfileData;
+  onChangeProfile: (updated: ProfileData) => void;
 };
-function ProfileEditDialog({ profileData }: ProfileEditDialogProps) {
-  const { user } = useAuth();
+function ProfileEditDialog({
+  profileData,
+  onChangeProfile,
+}: ProfileEditDialogProps) {
+  const navigate = useNavigate();
+  const [usernameError, setUsernameError] = useState<string | null>(null);
+  const [isOpened, setIsOpened] = useState<boolean>(false);
   const [profileForm, setProfileForm] = useState<ProfileFormData>({
     id: 0,
     username: "",
     bio: "",
     avatarUrl: "",
-    bgUrl: "/default-bg.jpg",
+    profileBgUrl: "/default-bg.jpg",
   });
 
   useEffect(() => {
@@ -36,13 +45,26 @@ function ProfileEditDialog({ profileData }: ProfileEditDialogProps) {
       username: profileData.username,
       bio: profileData.bio,
       avatarUrl: profileData.avatarUrl,
-      bgUrl: profileData.bgUrl,
+      profileBgUrl: profileData.profileBgUrl,
     });
   }, [profileData]);
 
+  useEffect(() => {
+    if (isOpened) {
+      setProfileForm({
+        id: profileData.id,
+        username: profileData.username,
+        bio: profileData.bio,
+        avatarUrl: profileData.avatarUrl,
+        profileBgUrl: profileData.profileBgUrl,
+      });
+      setUsernameError(null); // 清除錯誤訊息
+    }
+  }, [isOpened]);
+
   function handleImageChange(
     e: React.ChangeEvent<HTMLInputElement>,
-    field: "bgUrl" | "avatarUrl",
+    field: "profileBgUrl" | "avatarUrl",
   ) {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -79,18 +101,40 @@ function ProfileEditDialog({ profileData }: ProfileEditDialogProps) {
   ) {
     setProfileForm((prev) => ({
       ...prev,
-      [key]: value,
+      [key]: typeof value === "string" ? value.trim() : value,
     }));
   }
 
-  function handleSave() {
-    console.log(profileForm);
+  async function handleSave() {
+    const username = profileForm.username.trim();
+    if (username.length < 2) {
+      setUsernameError("長度少需要2個字");
+      return;
+    }
+    try {
+      const result = await updateProfile(profileForm);
+
+      toast.success("更新成功");
+      setIsOpened(false);
+      onChangeProfile(result.data);
+      navigate(`/users/${username}`);
+    } catch (err) {
+      const error = err as Error & { status?: number };
+
+      if (error.status === 409 && error.message.includes("用戶名")) {
+        setUsernameError(error.message);
+      } else {
+        toast.error(error.message || "更新失敗");
+      }
+    }
   }
 
   return (
-    <Dialog>
+    <Dialog open={isOpened} onOpenChange={setIsOpened}>
       <DialogTrigger asChild>
-        <Button variant="outline">編輯檔案</Button>
+        <Button variant="outline" onClick={() => setIsOpened(true)}>
+          編輯檔案
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
@@ -104,11 +148,11 @@ function ProfileEditDialog({ profileData }: ProfileEditDialogProps) {
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleImageChange(e, "bgUrl")}
+                onChange={(e) => handleImageChange(e, "profileBgUrl")}
                 className="hidden"
               />
               <img
-                src={profileForm.bgUrl || "/default-bg.jpg"}
+                src={profileForm.profileBgUrl || "/default-bg.jpg"}
                 alt="profile-bg"
                 className="h-full w-full object-cover"
               />
@@ -116,6 +160,7 @@ function ProfileEditDialog({ profileData }: ProfileEditDialogProps) {
                 <Camera className="h-6 w-6" />
               </div>
             </label>
+
             <div className="relative pb-20">
               <label className="group absolute -top-10 left-1/2 -translate-x-1/2 cursor-pointer md:-top-16">
                 <input
@@ -134,16 +179,23 @@ function ProfileEditDialog({ profileData }: ProfileEditDialogProps) {
               </label>
             </div>
           </div>
-          <div>
-            <label className="text-sm font-medium">使用者名稱</label>
+
+          <div className="space-y-1">
+            <div className="flex items-center gap-3 text-sm">
+              <Label className="font-medium">使用者名稱</Label>
+              {usernameError && (
+                <Label className="text-danger">* {usernameError}</Label>
+              )}
+            </div>
             <Input
               maxLength={50}
               value={profileForm.username}
               onChange={(e) => handleFormChange("username", e.target.value)}
             />
           </div>
-          <div>
-            <label className="text-sm font-medium">個人簡介</label>
+
+          <div className="space-y-1">
+            <Label className="text-sm font-medium">個人簡介</Label>
             <Textarea
               rows={4}
               maxLength={200}

@@ -22,7 +22,7 @@ export type ProfileData = {
   username: string;
   bio: string;
   avatarUrl: string;
-  bgUrl: string;
+  profileBgUrl: string;
   quizCount: number;
   articleCount: number;
   followers: number;
@@ -33,5 +33,5 @@ export type ProfileFormData = {
   username: string;
   bio: string;
   avatarUrl: string;
-  bgUrl: string;
+  profileBgUrl: string;
 };
