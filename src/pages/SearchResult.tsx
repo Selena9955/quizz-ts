@@ -21,8 +21,6 @@ function SearchResult() {
   const keyword = searchParams.get("q");
 
   useEffect(() => {
-    console.log(keyword);
-
     if (keyword) {
       setLoading(true);
     }
@@ -53,22 +51,28 @@ function SearchResult() {
                 <ArticleCard
                   key={article.id}
                   article={article}
-                  className="not-last:mb-3"
+                  className="mb-3"
                 />
               </>
             ))}
           {results.articles.length > 0 &&
             results.quizzes.map((quiz) => (
-              <>
+              <div className="mb-3">
                 <QuizCard key={quiz.id} quiz={quiz} />
-              </>
+              </div>
             ))}
-          {results.articles.length > 0 &&
-            results.tags.map((tag) => (
-              <>
-                <Badge key={tag.id}>{tag.name}</Badge>
-              </>
-            ))}
+          {results.articles.length > 0 && (
+            <>
+              <p className="mt-10 mb-2">標籤</p>
+              {results.tags.map((tag) => (
+                <>
+                  <Badge key={tag.id} className="bg-white">
+                    {tag.name}
+                  </Badge>
+                </>
+              ))}
+            </>
+          )}
         </>
       ) : (
         <p>找不到結果</p>

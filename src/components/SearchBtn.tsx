@@ -1,28 +1,22 @@
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { getSearchHistory } from "@/api/search.api";
 
 function SearchBtn() {
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>("");
-
-  const toggleSearch = () => {
-    setOpen((prev) => !prev);
-  };
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -36,12 +30,29 @@ function SearchBtn() {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
+  useEffect(() => {
+    if (open) {
+      setInputValue("");
+      getSearchHistory().then((data) => {
+        setSearchHistory(data);
+      });
+    }
+  }, [open]);
+
+  const toggleSearch = () => {
+    setOpen((prev) => !prev);
+  };
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key !== "Enter") return;
     if (inputValue.trim()) {
       const query = `q=${encodeURIComponent(inputValue)}`;
+      setOpen(false);
       navigate(`/search?${query}`);
     }
+  }
+  function handleHistoryClick(word: string) {
+    setInputValue(word);
   }
 
   return (
@@ -81,16 +92,15 @@ function SearchBtn() {
         />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
-            <CommandItem>Calendar</CommandItem>
-            <CommandItem>Search Emoji</CommandItem>
-            <CommandItem>Calculator</CommandItem>
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="Settings">
-            <CommandItem>Profile</CommandItem>
-            <CommandItem>Billing</CommandItem>
-            <CommandItem>Settings</CommandItem>
+          <CommandGroup heading="搜尋紀錄">
+            {searchHistory.map((word, index) => (
+              <CommandItem
+                key={index}
+                onSelect={() => handleHistoryClick(word)}
+              >
+                {word}
+              </CommandItem>
+            ))}
           </CommandGroup>
         </CommandList>
       </CommandDialog>
