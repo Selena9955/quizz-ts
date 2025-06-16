@@ -22,6 +22,8 @@ type OptEditProps = {
   onOptionsChange: (options: Option[]) => void;
   onSingleAnswerChange?: (id: string) => void;
   onMultipleAnswerChange?: (ids: string[]) => void;
+  singleAnswerId: string | null;
+  multipleAnswer: string[] | null;
 };
 
 function OptEdit({
@@ -30,9 +32,21 @@ function OptEdit({
   onOptionsChange,
   onSingleAnswerChange,
   onMultipleAnswerChange,
+  singleAnswerId = null,
+  multipleAnswer = null,
 }: OptEditProps) {
   const [correctAnswerId, setCorrectAnswerId] = useState<string[]>([]);
 
+  // 初始化時根據外部傳入的答案設 correctAnswerId
+  useEffect(() => {
+    if (quizType === QuizTypeType.Single && singleAnswerId) {
+      handleSelectedAnswer(singleAnswerId);
+    } else if (quizType === QuizTypeType.Multiple && multipleAnswer) {
+      multipleAnswer.forEach((id) => handleSelectedAnswer(id));
+    }
+  }, [quizType, singleAnswerId, multipleAnswer]);
+
+  // 每次 correctAnswerId 改變時，通知外部
   useEffect(() => {
     if (quizType === QuizTypeType.Single) {
       onSingleAnswerChange?.(correctAnswerId[0] ?? null);
@@ -112,6 +126,7 @@ function OptEdit({
                 handleSelectedAnswer={handleSelectedAnswer}
                 handleTextChange={handleTextChange}
                 handleDelete={handleDelete}
+                correctAnswerId={correctAnswerId}
               />
             ))}
           </SortableContext>

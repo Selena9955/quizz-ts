@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { v4 as uuid } from "uuid";
 import {
   QuizTypeType,
@@ -22,7 +22,8 @@ import FlashOptEdit from "@/components/FlashOptEdit";
 import { validateQuizData } from "@/utils/validationQuiz";
 import { Checkbox } from "@/components/ui/checkbox";
 import TagsInput from "@/components/TagsInput";
-import { createQuiz } from "@/api/quiz.api";
+import { createQuiz, getQuizById, updateQuiz } from "@/api/quiz.api";
+import { toast } from "sonner";
 
 const quizTypeOptions: { label: string; value: QuizTypeValue }[] = [
   { label: "單選題", value: QuizTypeType.Single },
@@ -32,6 +33,7 @@ const quizTypeOptions: { label: string; value: QuizTypeValue }[] = [
 
 function QuizEdit() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const titleRef = useRef<HTMLDivElement>(null);
   const titleDetailRef = useRef<QuillEditorRef>(null);
   const flashAnswerRef = useRef<QuillEditorRef>(null);
@@ -52,10 +54,57 @@ function QuizEdit() {
   )?.label;
 
   useEffect(() => {
+    if (id) {
+      console.log(id);
+      async function fetchData() {
+        try {
+          const resData = await getQuizById(id);
+          const data = resData.data;
+          const tagNames: string[] = data.tags.map((tag) => tag.name);
+          setTitle(data.title);
+          setTitleDetail(data.titleDetail);
+          setAnswerDetail(data.answerDetail);
+          setTags(tagNames);
+          if (data.quizType == QuizTypeType.Single) {
+            setOptions(data.options);
+            handleSingleAnswerChange(data.singleAnswerId);
+            setSingleAnswerId(data.singleAnswerId);
+          }
+          if (data.quizType == QuizTypeType.Multiple) {
+            setOptions(data.options);
+            setMultipleAnswerId(data.multipleAnswerId);
+          }
+          if (data.quizType == QuizTypeType.Flash) {
+            setOptions(data.flashAnswer);
+          }
+        } catch (err: any) {
+          toast.error(err.message);
+        }
+      }
+      fetchData();
+    } else {
+      initStatus();
+    }
+  }, [id]);
+
+  useEffect(() => {
     if (titleRef.current && titleRef.current.innerText !== title) {
       titleRef.current.innerText = title;
     }
   }, [title]);
+
+  function initStatus() {
+    setQuizType(QuizTypeType.Single);
+    setTitle("");
+    setTitleDetail("");
+    setOptions([{ id: uuid(), text: "" }]);
+    setSingleAnswerId("");
+    setMultipleAnswerId([]);
+    setFlashAnswer("");
+    setAnswerDetail("");
+    setTags([]);
+    setErrMsg("");
+  }
 
   function handleTypeChange(type: QuizTypeValue) {
     setQuizType(type);
@@ -106,25 +155,22 @@ function QuizEdit() {
       answerDetail: answerDetail,
       tags: tags,
     };
-
-    try {
-      createQuiz(payload);
-
-      setTitle("");
-      setTitleDetail("");
-      setOptions([{ id: uuid(), text: "" }]);
-      setSingleAnswerId("");
-      setMultipleAnswerId([]);
-      setFlashAnswer("");
-      setAnswerDetail("");
-      setTags([]);
-      setErrMsg("");
-      if (!hasMoreAdd) {
-        setQuizType(QuizTypeType.Single);
-        navigate("/quizzes", { state: { shouldRefresh: true } });
+    if (id) {
+      console.log(payload);
+      updateQuiz(id, payload);
+      toast.success("修改成功");
+      navigate("/quizzes", { state: { shouldRefresh: true } });
+    } else {
+      try {
+        createQuiz(payload);
+        initStatus();
+        if (!hasMoreAdd) {
+          setQuizType(QuizTypeType.Single);
+          navigate("/quizzes", { state: { shouldRefresh: true } });
+        }
+      } catch (err) {
+        alert("新增失敗，請稍後再嘗試");
       }
-    } catch (err) {
-      alert("新增失敗，請稍後再嘗試");
     }
   }
 
@@ -181,6 +227,8 @@ function QuizEdit() {
             options={options}
             onOptionsChange={handleOptionsChange}
             onSingleAnswerChange={handleSingleAnswerChange}
+            singleAnswerId={singleAnswerId}
+            multipleAnswer={null}
           />
         )}
         {quizType === 1 && (
@@ -189,6 +237,8 @@ function QuizEdit() {
             options={options}
             onOptionsChange={handleOptionsChange}
             onMultipleAnswerChange={handleMultipleAnswerChange}
+            singleAnswerId={null}
+            multipleAnswer={multipleAnswerId}
           />
         )}
         {quizType === 2 && (
@@ -213,14 +263,18 @@ function QuizEdit() {
       <div className="fixed bottom-0 left-1/2 w-full max-w-200 -translate-x-1/2">
         <div className="mx-3 flex items-center justify-between gap-2 rounded-tl-lg rounded-tr-lg bg-white p-3">
           <p className="text-danger font-semibold">*{errMsg}</p>
-          <div className="flex items-center">
-            <Checkbox
-              checked={hasMoreAdd}
-              onCheckedChange={(checked) => setHasMoreAdd(checked === true)}
-            />
-            <p className="mr-4 ml-1">繼續新增</p>
-            <Button onClick={handleNewSubmit}>新增</Button>
-          </div>
+          {id ? (
+            <Button onClick={handleNewSubmit}>保存</Button>
+          ) : (
+            <div className="flex items-center">
+              <Checkbox
+                checked={hasMoreAdd}
+                onCheckedChange={(checked) => setHasMoreAdd(checked === true)}
+              />
+              <p className="mr-4 ml-1">繼續新增</p>
+              <Button onClick={handleNewSubmit}>新增</Button>
+            </div>
+          )}
         </div>
       </div>
     </>

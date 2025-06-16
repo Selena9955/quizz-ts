@@ -29,6 +29,7 @@ const router = createBrowserRouter([
           { index: true, Component: Home },
           { path: "quizzes", Component: Quizzes, children: [] },
           { path: "quizzes/new", Component: QuizEdit },
+          { path: "quizzes/:id/edit", Component: QuizEdit },
           { path: "quizzes/:id", Component: QuizDetail },
           {
             path: "articles",

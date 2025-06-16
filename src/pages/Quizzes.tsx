@@ -19,6 +19,7 @@ function Quizzes() {
 
     if (shouldRefresh) {
       navigate(location.pathname, { replace: true });
+      fetchGetAll();
       return;
     }
     fetchGetAll();

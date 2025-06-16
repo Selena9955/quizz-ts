@@ -12,6 +12,7 @@ type SingleOptItemProps = {
   handleSelectedAnswer: (id: string) => void;
   handleTextChange: (id: string, text: string) => void;
   handleDelete: (id: string) => void;
+  correctAnswerId?: string[];
 };
 
 function SingleOptItemEdit({
@@ -20,6 +21,7 @@ function SingleOptItemEdit({
   handleSelectedAnswer,
   handleTextChange,
   handleDelete,
+  correctAnswerId,
 }: SingleOptItemProps) {
   const { id, text } = option;
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -38,10 +40,18 @@ function SingleOptItemEdit({
         <GripVertical />
       </span>
       {quizType == 0 && (
-        <RadioGroupItem value={id} onClick={() => handleSelectedAnswer(id)} />
+        <RadioGroupItem
+          value={id}
+          onClick={() => handleSelectedAnswer(id)}
+          checked={correctAnswerId?.includes(id) ?? false}
+        />
       )}
       {quizType == 1 && (
-        <Checkbox value={id} onClick={() => handleSelectedAnswer(id)} />
+        <Checkbox
+          value={id}
+          onClick={() => handleSelectedAnswer(id)}
+          defaultChecked={correctAnswerId?.includes(id) ?? false}
+        />
       )}
       <input
         className="w-full rounded border px-2 py-1"

@@ -87,7 +87,7 @@ function QuizDetail() {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
               <DropdownMenuItem asChild>
-                <Link to={`/articles/${quiz.id}/edit`}>修改</Link>
+                <Link to={`/quizzes/${quiz.id}/edit`}>修改</Link>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleDelete(quiz.id)}>
                 刪除

@@ -67,3 +67,21 @@ export async function deleteQuizById(id: number) {
     console.error("deleteQuiz error:", err);
   }
 }
+
+export async function updateQuiz(id: string, payload: QuizSubmitData) {
+  try {
+    const res = await fetch(`${API_BASE}/quizzes/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const resData = await res.json();
+      throw new Error(resData.message || "修改失敗");
+    }
+  } catch (err) {
+    console.error("createQuiz error:", err);
+  }
+}
