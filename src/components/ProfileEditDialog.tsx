@@ -199,7 +199,7 @@ function ProfileEditDialog({
             <Textarea
               rows={4}
               maxLength={200}
-              value={profileForm.bio}
+              value={profileForm.bio || ""}
               onChange={(e) => handleFormChange("bio", e.target.value)}
             />
           </div>
