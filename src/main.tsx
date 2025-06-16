@@ -16,6 +16,7 @@ import Verify from "./pages/Verify.tsx";
 import AuthLayout from "./components/AuthLayout.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import Profile from "./pages/Profile.tsx";
+import SearchResult from "./pages/SearchResult.tsx";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
           { path: "articles/:id", Component: ArticleDetail },
           { path: "tags", Component: Tags },
           { path: "users/:username", Component: Profile },
+          { path: "search", Component: SearchResult },
         ],
       },
       {

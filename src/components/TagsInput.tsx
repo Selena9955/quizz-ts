@@ -9,7 +9,7 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
-import type { Tag } from "@/types/tag.types";
+import type { TagData } from "@/types/tag.types";
 import { getAllTags } from "@/api/tag.api";
 import { Badge } from "./ui/badge";
 
@@ -22,7 +22,7 @@ type TagsInputProps = {
 function TagsInput({ selectedTags, onChangeSelectedTags }: TagsInputProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
-  const [allTag, setAllTags] = useState<Tag[]>([]);
+  const [allTag, setAllTags] = useState<TagData[]>([]);
 
   async function handleOpenTagDialog() {
     setOpen((prev) => !prev);

@@ -13,9 +13,12 @@ import {
   CommandShortcut,
 } from "@/components/ui/command";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 function SearchBtn() {
-  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const [open, setOpen] = useState<boolean>(false);
+  const [inputValue, setInputValue] = useState<string>("");
 
   const toggleSearch = () => {
     setOpen((prev) => !prev);
@@ -32,6 +35,14 @@ function SearchBtn() {
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
   }, []);
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key !== "Enter") return;
+    if (inputValue.trim()) {
+      const query = `q=${encodeURIComponent(inputValue)}`;
+      navigate(`/search?${query}`);
+    }
+  }
 
   return (
     <div>
@@ -62,7 +73,12 @@ function SearchBtn() {
       </Button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="請輸入搜尋文字" />
+        <CommandInput
+          placeholder="請輸入搜尋文字，按 Enter 送出"
+          value={inputValue}
+          onValueChange={setInputValue}
+          onKeyDown={handleKeyDown}
+        />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           <CommandGroup heading="Suggestions">
