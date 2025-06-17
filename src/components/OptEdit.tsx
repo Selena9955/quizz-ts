@@ -40,11 +40,11 @@ function OptEdit({
   // 初始化時根據外部傳入的答案設 correctAnswerId
   useEffect(() => {
     if (quizType === QuizTypeType.Single && singleAnswerId) {
-      handleSelectedAnswer(singleAnswerId);
+      setCorrectAnswerId([singleAnswerId]);
     } else if (quizType === QuizTypeType.Multiple && multipleAnswer) {
-      multipleAnswer.forEach((id) => handleSelectedAnswer(id));
+      setCorrectAnswerId(multipleAnswer);
     }
-  }, [quizType, singleAnswerId, multipleAnswer]);
+  }, [quizType, singleAnswerId, JSON.stringify(multipleAnswer)]);
 
   // 每次 correctAnswerId 改變時，通知外部
   useEffect(() => {
