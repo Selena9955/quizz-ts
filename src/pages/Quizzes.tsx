@@ -2,12 +2,22 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
+import { ChevronDown } from "lucide-react";
 import { getAllQuizzes } from "@/api/quiz.api";
 import type { QuizListData } from "@/types/quiz.types";
 import type { TagData } from "@/types/tag.types";
 import QuizCard from "@/components/QuizCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import PaginationGroup from "@/components/PaginationGroup";
 
 const mockUser = {
   username: "99",
@@ -26,11 +36,14 @@ const mockUser = {
   },
 };
 
+type FilterType = "ALL" | "SINGLE" | "MULTIPLE" | "FLASHCARD";
+
 function Quizzes() {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState<QuizListData[]>([]);
+  const [filterType, setFilterType] = useState<FilterType>("ALL");
   const [popularTags, setPopularTags] = useState<TagData[]>([
     { id: 20, name: "good" },
     { id: 3, name: "test" },
@@ -113,12 +126,67 @@ function Quizzes() {
 
       <div className="container">
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+          {/* 題目列表 */}
           <div className="lg:col-span-3">
+            <div className="mb-3 flex justify-between">
+              <ToggleGroup
+                variant="outline"
+                type="single"
+                value={filterType}
+                onValueChange={(val) => {
+                  if (val) {
+                    setFilterType(val as FilterType);
+                  }
+                }}
+              >
+                <ToggleGroupItem
+                  value="ALL"
+                  className="data-[state=on]:bg-primary data-[state=on]:text-white"
+                >
+                  全部
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  value="SINGLE"
+                  className="data-[state=on]:bg-primary data-[state=on]:text-white"
+                >
+                  單選
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  value="MULTIPLE"
+                  className="data-[state=on]:bg-primary data-[state=on]:text-white"
+                >
+                  多選
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  value="FLASHCARD"
+                  className="data-[state=on]:bg-primary data-[state=on]:text-white"
+                >
+                  單字
+                </ToggleGroupItem>
+              </ToggleGroup>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="text-muted-foreground border-gray-200"
+                  >
+                    每頁 10 題
+                    <ChevronDown className="text-gray-400" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>每頁 10 題</DropdownMenuItem>
+                  <DropdownMenuItem>每頁 20 題</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
             <div className="grid divide-y rounded-md bg-white px-2 py-2 shadow-sm">
               {quizzes.map((quiz) => (
                 <QuizCard key={quiz.id} quiz={quiz} />
               ))}
             </div>
+            <PaginationGroup />
           </div>
 
           {/* 熱門標籤 */}
