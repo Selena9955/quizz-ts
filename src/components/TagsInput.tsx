@@ -17,9 +17,14 @@ import { Badge } from "./ui/badge";
 type TagsInputProps = {
   selectedTags: string[];
   onChangeSelectedTags: (tags: string[]) => void;
+  buttonLabel?: string;
 };
 
-function TagsInput({ selectedTags, onChangeSelectedTags }: TagsInputProps) {
+function TagsInput({
+  selectedTags,
+  onChangeSelectedTags,
+  buttonLabel = "管理標籤 +",
+}: TagsInputProps) {
   const [open, setOpen] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>("");
   const [allTag, setAllTags] = useState<TagData[]>([]);
@@ -59,7 +64,7 @@ function TagsInput({ selectedTags, onChangeSelectedTags }: TagsInputProps) {
         {selectedTags &&
           selectedTags.map((tag, index) => <Badge key={index}>{tag}</Badge>)}
         <Button variant="outline" onClick={handleOpenTagDialog}>
-          管理標籤 +
+          {buttonLabel || "管理標籤 +"}
         </Button>
       </div>
 
