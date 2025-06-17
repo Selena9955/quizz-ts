@@ -50,6 +50,7 @@ export type QuizDetailData = {
   answerDetail: string;
   tags: TagData[];
   authorName: string;
+  authorAvatarUrl: string;
   createTime: string;
   updateTime: string;
   options: Option[];

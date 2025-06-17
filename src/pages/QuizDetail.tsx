@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Ellipsis } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router";
 import {
@@ -15,6 +15,7 @@ import { useAuth } from "@/context/AuthContext";
 import OptItem from "@/components/OptItem";
 import { Label } from "@/components/ui/label";
 import FlashOptItem from "@/components/FlashOptItem";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function QuizDetail() {
   const navigate = useNavigate();
@@ -34,8 +35,8 @@ function QuizDetail() {
       try {
         const resData = await getQuizById(id);
 
-        setQuiz(resData.data);
-        setIsAuthor(resData.data.authorId === user?.id);
+        setQuiz(resData);
+        setIsAuthor(resData.authorId === user?.id);
       } catch (err: any) {
         if (err.status === 404) {
           navigate("/404", { replace: true });
@@ -46,6 +47,8 @@ function QuizDetail() {
     }
     fetchData();
   }, []);
+
+  console.log(isAuthor);
 
   if (!quiz) return <p>載入中...</p>;
 
@@ -67,95 +70,112 @@ function QuizDetail() {
   }
 
   return (
-    <article className="rounded-md bg-white p-3 md:p-8 lg:mx-20">
-      <div className="flex justify-between">
-        <div className="text-muted-foreground flex flex-wrap items-center gap-2">
-          <div>{quiz.authorName}</div>
-          <p className="text-xs">
-            {quiz.createTime.slice(0, 10)}
-            {quiz.createTime.slice(0, 10) !== quiz.updateTime.slice(0, 10) && (
-              <>（更新：{quiz.updateTime.slice(0, 10)}）</>
-            )}
-          </p>
+    <div className="defaultP container">
+      <article className="rounded-md bg-white p-3 md:p-8 lg:mx-20">
+        <div className="flex justify-between">
+          <div className="text-muted-foreground flex w-full flex-wrap items-center justify-between">
+            <Link
+              to={`/users/${quiz.authorName}`}
+              className="flex items-center gap-2"
+            >
+              <Avatar className="size-10">
+                <AvatarImage src={quiz.authorAvatarUrl} />
+                <AvatarFallback>default</AvatarFallback>
+              </Avatar>
+              <p className="text-lg font-semibold">{quiz.authorName}</p>
+            </Link>
+            <div className="flex items-center">
+              <p>
+                {quiz.createTime.slice(0, 10)}
+                {quiz.createTime.slice(0, 10) !==
+                  quiz.updateTime.slice(0, 10) && (
+                  <>（更新：{quiz.updateTime.slice(0, 10)}）</>
+                )}
+              </p>
+              {isAuthor && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost">
+                      <Ellipsis />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem asChild>
+                      <Link to={`/quizzes/${quiz.id}/edit`}>修改</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleDelete(quiz.id)}>
+                      刪除
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+          </div>
         </div>
-        {isAuthor && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost">
-                <Ellipsis />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem asChild>
-                <Link to={`/quizzes/${quiz.id}/edit`}>修改</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleDelete(quiz.id)}>
-                刪除
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+
+        <h1 className="mt-10 mb-3 text-3xl font-bold">{quiz.title}</h1>
+
+        <div
+          className="[&_img]:mx-auto [&_img]:block"
+          dangerouslySetInnerHTML={{ __html: quiz.titleDetail }}
+        />
+        <hr className="my-6" />
+
+        {quiz.quizType === QuizTypeType.Single && (
+          <OptItem
+            quizType={quiz.quizType}
+            options={quiz.options}
+            currAnswer={quiz.singleAnswerId}
+            selectedAnswers={selectedAnswers}
+            onSelectAnswers={setSelectedAnswers}
+            showAnswer={showAnswer}
+          />
         )}
-      </div>
+        {quiz.quizType === QuizTypeType.Multiple && (
+          <OptItem
+            quizType={quiz.quizType}
+            options={quiz.options}
+            currAnswers={quiz.multipleAnswerId}
+            selectedAnswers={selectedAnswers}
+            onSelectAnswers={setSelectedAnswers}
+            showAnswer={showAnswer}
+          />
+        )}
+        {quiz.quizType === QuizTypeType.Flash && (
+          <FlashOptItem
+            flashAnswer={quiz.flashAnswer}
+            showAnswer={showAnswer}
+          />
+        )}
 
-      <h1 className="my-3 text-3xl font-bold">{quiz.title}</h1>
+        {!showAnswer && (
+          <div className="mt-8 text-center">
+            <Button
+              className="w-full md:max-w-100"
+              variant="outline"
+              onClick={handleShowAnswer}
+            >
+              查看解答
+            </Button>
+          </div>
+        )}
 
-      <div
-        className="[&_img]:mx-auto [&_img]:block"
-        dangerouslySetInnerHTML={{ __html: quiz.titleDetail }}
-      />
-      <hr className="my-6" />
-
-      {quiz.quizType === QuizTypeType.Single && (
-        <OptItem
-          quizType={quiz.quizType}
-          options={quiz.options}
-          currAnswer={quiz.singleAnswerId}
-          selectedAnswers={selectedAnswers}
-          onSelectAnswers={setSelectedAnswers}
-          showAnswer={showAnswer}
-        />
-      )}
-      {quiz.quizType === QuizTypeType.Multiple && (
-        <OptItem
-          quizType={quiz.quizType}
-          options={quiz.options}
-          currAnswers={quiz.multipleAnswerId}
-          selectedAnswers={selectedAnswers}
-          onSelectAnswers={setSelectedAnswers}
-          showAnswer={showAnswer}
-        />
-      )}
-      {quiz.quizType === QuizTypeType.Flash && (
-        <FlashOptItem flashAnswer={quiz.flashAnswer} showAnswer={showAnswer} />
-      )}
-
-      {!showAnswer && (
-        <div className="mt-8 text-center">
-          <Button
-            className="w-full md:max-w-100"
-            variant="outline"
-            onClick={handleShowAnswer}
-          >
-            查看解答
-          </Button>
+        {showAnswer && quiz.answerDetail && (
+          <div className="bg-muted mt-10 space-y-2 rounded-sm p-4">
+            <Label className="text-secondary">解答補充</Label>
+            <p>{quiz.answerDetail}</p>
+          </div>
+        )}
+        <div className="mt-10 flex gap-2">
+          <Label className="text-muted-foreground">標籤</Label>
+          {quiz?.tags.map((tag) => (
+            <Badge key={tag.id} variant="secondary" size="sm">
+              {tag.name}
+            </Badge>
+          ))}
         </div>
-      )}
-
-      {showAnswer && quiz.answerDetail && (
-        <div className="bg-muted mt-10 space-y-2 rounded-sm p-4">
-          <Label className="text-secondary">解答補充</Label>
-          <p>{quiz.answerDetail}</p>
-        </div>
-      )}
-      <div className="mt-10 flex gap-2">
-        <Label className="text-muted-foreground">標籤</Label>
-        {quiz?.tags.map((tag) => (
-          <Badge key={tag.id} variant="secondary" size="sm">
-            {tag.name}
-          </Badge>
-        ))}
-      </div>
-    </article>
+      </article>
+    </div>
   );
 }
 

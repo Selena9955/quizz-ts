@@ -30,7 +30,6 @@ function Header() {
 
   // 判斷是否登入
   const isLoggedIn = user !== null;
-  console.log(user);
 
   useEffect(() => {
     // 每次路由變化就關閉選單

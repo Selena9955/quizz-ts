@@ -52,7 +52,9 @@ export async function getQuizById(id: string | undefined) {
     if (!res.ok) {
       throw new Error(resData.message || "取得失敗");
     }
-    return resData;
+    console.log(resData);
+
+    return resData.data;
   } catch (err) {
     console.error("getQuiz error:", err);
   }
