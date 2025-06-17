@@ -14,7 +14,10 @@ import {
   getUserArticles,
   getUserProfileById,
   getUserQuizzes,
+  toggleFollow,
 } from "@/api/user.api";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 type StatItem = {
   label: string;
@@ -46,6 +49,7 @@ function Profile() {
   const [quizzes, setQuizzes] = useState<QuizListData[] | null>(null);
   const [articles, setArticles] = useState<ArticleListType[] | null>(null);
   const [activeTab, setActiveTab] = useState<string>("quizzes");
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
   useEffect(() => {
     if (!username) return;
@@ -101,6 +105,20 @@ function Profile() {
     }
   }
 
+  async function handleToggleFollow() {
+    try {
+      const data = await toggleFollow(profile.id);
+      setIsFollowing(data.isFollowing);
+      setStatsMap((prev) => {
+        const newMap = new Map(prev);
+        newMap.set("粉絲數", formatNumber(data.followerCount));
+        return newMap;
+      });
+    } catch (error) {
+      toast.error("追蹤失敗，請稍侯再嘗試");
+    }
+  }
+
   function formatNumber(num: number): string {
     const n = Number(num);
     if (isNaN(n)) return "0";
@@ -114,7 +132,7 @@ function Profile() {
   }
 
   return (
-    <>
+    <div className="defaultP container">
       {isLoading ? (
         <div className="h-160">
           <LoadingIcon />
@@ -128,6 +146,7 @@ function Profile() {
               className="h-full w-full object-cover"
             />
           </div>
+
           <div className="relative px-5 pt-12 pb-5 md:px-10 md:pt-6">
             <Avatar className="absolute -top-10 size-20 border-2 border-white md:-top-16 md:size-32">
               <AvatarImage src={profile?.avatarUrl} />
@@ -135,11 +154,18 @@ function Profile() {
             </Avatar>
             <div className="flex justify-between md:ml-36">
               <h3 className="text-3xl">{profile.username}</h3>
-              {user?.id === profile.id && (
+              {user?.id === profile.id ? (
                 <ProfileEditDialog
                   profileData={profile}
                   onChangeProfile={setProfile}
                 />
+              ) : (
+                <Button
+                  variant={isFollowing ? "default" : "outline"}
+                  onClick={handleToggleFollow}
+                >
+                  追蹤
+                </Button>
               )}
             </div>
 
@@ -207,7 +233,7 @@ function Profile() {
           </TabsContent>
         </Tabs>
       </section>
-    </>
+    </div>
   );
 }
 

@@ -70,3 +70,21 @@ export async function getUserQuizzes(username: string) {
     throw err;
   }
 }
+
+export async function toggleFollow(targetUserId: number) {
+  const res = await fetch(`${API_BASE}/users/follow/${targetUserId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  });
+
+  const resData = await res.json();
+
+  if (!res.ok) {
+    const error = new Error(resData.message || "追蹤失敗");
+    (error as any).status = res.status;
+    throw error;
+  }
+  console.log(resData);
+  return resData.data;
+}

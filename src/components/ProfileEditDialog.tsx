@@ -188,7 +188,7 @@ function ProfileEditDialog({
               )}
             </div>
             <Input
-              maxLength={50}
+              maxLength={20}
               value={profileForm.username}
               onChange={(e) => handleFormChange("username", e.target.value)}
             />
