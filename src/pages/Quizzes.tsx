@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation, Link } from "react-router";
+import { useNavigate, useLocation, Link, useSearchParams } from "react-router";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { getAllQuizzes } from "@/api/quiz.api";
-import type { QuizListData } from "@/types/quiz.types";
+import type { FilterType, QuizListData } from "@/types/quiz.types";
 import type { TagData } from "@/types/tag.types";
 import QuizCard from "@/components/QuizCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -36,14 +36,16 @@ const mockUser = {
   },
 };
 
-type FilterType = "ALL" | "SINGLE" | "MULTIPLE" | "FLASHCARD";
-
 function Quizzes() {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [quizzes, setQuizzes] = useState<QuizListData[]>([]);
   const [filterType, setFilterType] = useState<FilterType>("ALL");
+  const [currPage, setCurrPage] = useState<number>(1);
+  const [allPage, setAllPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
   const [popularTags, setPopularTags] = useState<TagData[]>([
     { id: 20, name: "good" },
     { id: 3, name: "test" },
@@ -52,9 +54,10 @@ function Quizzes() {
   useEffect(() => {
     const shouldRefresh = location.state?.shouldRefresh;
     async function fetchGetAll() {
-      const resData = await getAllQuizzes();
-      console.log(resData);
-      setQuizzes(resData.data);
+      const data = await getAllQuizzes(filterType, currPage, pageSize);
+      console.log(data);
+      setQuizzes(data.items);
+      setAllPage(data.totalPages);
     }
 
     if (shouldRefresh) {
@@ -63,7 +66,28 @@ function Quizzes() {
       return;
     }
     fetchGetAll();
-  }, [location.key]);
+  }, [location.key, currPage, filterType, pageSize]);
+
+  useEffect(() => {
+    setSearchParams({
+      type: filterType,
+      page: currPage.toString(),
+      size: pageSize.toString(),
+    });
+  }, [filterType, currPage, pageSize]);
+
+  function handleFilterChange(val: string | null) {
+    if (val) {
+      setFilterType(val as FilterType);
+      setCurrPage(1);
+    }
+  }
+
+  function handlePageSizeChange(size: number) {
+    setPageSize(size);
+    setCurrPage(1); // 換每頁數要跳回第一頁
+  }
+
   return (
     <div className="pb-10">
       {/* 答題記錄面板 */}
@@ -80,8 +104,8 @@ function Quizzes() {
           }
         ></div>
 
-        <div className="relative z-10 container pt-32 pb-8">
-          <div className="z-10 grid gap-6 rounded-md border bg-white p-5 shadow-sm md:grid-cols-[3fr_2fr] md:px-10 md:py-8">
+        <div className="relative z-2 container pt-32 pb-8">
+          <div className="grid gap-6 rounded-md border bg-white p-5 shadow-sm md:grid-cols-[3fr_2fr] md:px-10 md:py-8">
             {/* 頭像 + 使用者資訊 */}
             <div className="flex items-center gap-4 md:gap-8">
               <Avatar className="size-20 md:size-28">
@@ -133,11 +157,7 @@ function Quizzes() {
                 variant="outline"
                 type="single"
                 value={filterType}
-                onValueChange={(val) => {
-                  if (val) {
-                    setFilterType(val as FilterType);
-                  }
-                }}
+                onValueChange={handleFilterChange}
               >
                 <ToggleGroupItem
                   value="ALL"
@@ -158,7 +178,7 @@ function Quizzes() {
                   多選
                 </ToggleGroupItem>
                 <ToggleGroupItem
-                  value="FLASHCARD"
+                  value="FLASH"
                   className="data-[state=on]:bg-primary data-[state=on]:text-white"
                 >
                   單字
@@ -171,13 +191,17 @@ function Quizzes() {
                     variant="outline"
                     className="text-muted-foreground border-gray-200"
                   >
-                    每頁 10 題
+                    每頁 {pageSize} 題
                     <ChevronDown className="text-gray-400" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem>每頁 10 題</DropdownMenuItem>
-                  <DropdownMenuItem>每頁 20 題</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handlePageSizeChange(10)}>
+                    每頁 10 題
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handlePageSizeChange(20)}>
+                    每頁 20 題
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -186,7 +210,14 @@ function Quizzes() {
                 <QuizCard key={quiz.id} quiz={quiz} />
               ))}
             </div>
-            <PaginationGroup />
+
+            <PaginationGroup
+              currentPage={currPage}
+              totalPages={allPage}
+              onPageChange={(page) => {
+                setCurrPage(page);
+              }}
+            />
           </div>
 
           {/* 熱門標籤 */}

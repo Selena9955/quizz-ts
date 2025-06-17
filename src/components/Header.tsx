@@ -51,7 +51,7 @@ function Header() {
   }
 
   return (
-    <header className="fixed inset-x-0 top-0 z-10 border-b border-gray-950/5">
+    <header className="fixed inset-x-0 top-0 z-49 border-b border-gray-950/5">
       <div className="bg-background/95 supports-[backdrop-filter]:bg-background/60 backdrop-blur">
         <div className="container flex h-14 items-center justify-between gap-2 md:gap-4">
           <Link to="/" className="text-primary text-2xl font-bold">

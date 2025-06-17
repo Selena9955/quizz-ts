@@ -19,6 +19,8 @@ export const QuizTypeLabels: Record<QuizTypeValue, string> = {
   [QuizTypeType.Flash]: "單字卡",
 };
 
+export type FilterType = "ALL" | "SINGLE" | "MULTIPLE" | "FLASH";
+
 export type QuizSubmitData = {
   quizType: QuizTypeValue;
   title: string;

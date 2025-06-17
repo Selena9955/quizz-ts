@@ -1,4 +1,4 @@
-import type { QuizSubmitData } from "@/types/quiz.types";
+import type { FilterType, QuizSubmitData } from "@/types/quiz.types";
 
 const API_BASE = "http://localhost:8081";
 
@@ -20,17 +20,24 @@ export async function createQuiz(payload: QuizSubmitData) {
   }
 }
 
-export async function getAllQuizzes() {
+export async function getAllQuizzes(
+  filterType: FilterType = "ALL",
+  page: number = 1,
+  pageSize: number = 10,
+) {
   try {
-    const res = await fetch(`${API_BASE}/quizzes`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    });
+    const res = await fetch(
+      `${API_BASE}/quizzes?type=${filterType}&page=${page}&size=${pageSize}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      },
+    );
     const resData = await res.json();
     if (!res.ok) {
       throw new Error(resData.message || "取得失敗");
     }
-    return resData;
+    return resData.data;
   } catch (err) {
     console.error("getAllQ error:", err);
   }
