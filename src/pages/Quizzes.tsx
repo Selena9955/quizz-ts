@@ -1,13 +1,40 @@
-import { getAllQuizzes } from "@/api/quiz.api";
-import QuizCard from "@/components/QuizCard";
-import type { QuizListData } from "@/types/quiz.types";
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useNavigate, useLocation, Link } from "react-router";
+import { useAuth } from "@/context/AuthContext";
+import { cn } from "@/lib/utils";
+import { getAllQuizzes } from "@/api/quiz.api";
+import type { QuizListData } from "@/types/quiz.types";
+import type { TagData } from "@/types/tag.types";
+import QuizCard from "@/components/QuizCard";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+
+const mockUser = {
+  username: "99",
+  avatarUrl: "https://picsum.photos/960", // 隨機產生頭像
+  stats: {
+    totalAnswered: 12,
+    correctRate: 0.83,
+    recentQuizzes: [
+      {
+        id: 1,
+        title: "單字水果測驗",
+      },
+      { id: 2, title: "CSS Flex 基礎" },
+      { id: 3, title: "Java 基礎入門" },
+    ],
+  },
+};
 
 function Quizzes() {
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [quizzes, setQuizzes] = useState<QuizListData[]>([]);
+  const [popularTags, setPopularTags] = useState<TagData[]>([
+    { id: 20, name: "good" },
+    { id: 3, name: "test" },
+  ]);
 
   useEffect(() => {
     const shouldRefresh = location.state?.shouldRefresh;
@@ -25,11 +52,91 @@ function Quizzes() {
     fetchGetAll();
   }, [location.key]);
   return (
-    <div>
-      <div className="grid gap-3 md:grid-cols-2">
-        {quizzes.map((quiz) => (
-          <QuizCard key={quiz.id} quiz={quiz} />
-        ))}
+    <div className="pb-10">
+      {/* 答題記錄面板 */}
+      <section className="relative">
+        <div
+          className={cn(
+            "absolute top-0 z-0 min-h-60 w-full bg-cover bg-center",
+            !user?.profileBgUrl && "bg-primary/20",
+          )}
+          style={
+            user?.profileBgUrl
+              ? { backgroundImage: `url(${user.profileBgUrl})` }
+              : undefined
+          }
+        ></div>
+
+        <div className="relative z-10 container pt-32 pb-8">
+          <div className="z-10 grid gap-6 rounded-md border bg-white p-5 shadow-sm md:grid-cols-[3fr_2fr] md:px-10 md:py-8">
+            {/* 頭像 + 使用者資訊 */}
+            <div className="flex items-center gap-4 md:gap-8">
+              <Avatar className="size-20 md:size-28">
+                <AvatarImage src={user?.avatarUrl} />
+                <AvatarFallback>default</AvatarFallback>
+              </Avatar>
+
+              <div>
+                <h2 className="text-lg font-semibold">
+                  {user?.username ?? "尚未登入"}
+                </h2>
+                <p className="text-muted-foreground flex flex-wrap space-x-3 text-sm">
+                  <span>完成 {mockUser.stats.totalAnswered} 題</span>
+                  <span>
+                    正確率 {Math.round(mockUser.stats.correctRate * 100)}%
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            {/* 最近答過的題目 */}
+            <div className="flex flex-col justify-center space-y-2 text-sm md:items-center">
+              <h6 className="text-muted-foreground font-medium">
+                最近答過的題目
+              </h6>
+              <ul className="grid gap-1">
+                {mockUser.stats.recentQuizzes.slice(0, 3).map((quiz) => (
+                  <li key={quiz.id}>
+                    <Link
+                      to={`/quizzes/${quiz.id}`}
+                      className="text-primary hover:underline"
+                    >
+                      {quiz.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="container">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
+          <div className="lg:col-span-3">
+            <div className="grid divide-y rounded-md bg-white px-2 py-2 shadow-sm">
+              {quizzes.map((quiz) => (
+                <QuizCard key={quiz.id} quiz={quiz} />
+              ))}
+            </div>
+          </div>
+
+          {/* 熱門標籤 */}
+          <aside className="self-start rounded-md bg-white p-4 shadow-sm">
+            <h2 className="mb-3 text-base font-semibold">熱門標籤</h2>
+            <div className="flex flex-wrap gap-2">
+              {popularTags.length > 0 ? (
+                popularTags.map((tag) => (
+                  <Badge key={tag.id} className="px-3 py-1 text-sm">
+                    {tag.name}
+                  </Badge>
+                ))
+              ) : (
+                <p className="text-muted-foreground text-sm">尚無標籤</p>
+              )}
+            </div>
+          </aside>
+        </div>
       </div>
     </div>
   );

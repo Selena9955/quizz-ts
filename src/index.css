@@ -131,6 +131,15 @@
   }
 }
 
+@utility defaultP {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  @variant md {
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+}
+
 .ql-editor {
   min-height: 10rem;
   font-size: 1rem;

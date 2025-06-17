@@ -27,11 +27,10 @@ function Header() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const { user, setUser } = useAuth();
   const [navOpened, setNavOpened] = useState(false);
-  const [imgSrc, setImgSrc] = useState<string>("/default-avatar.jpg");
 
   // 判斷是否登入
   const isLoggedIn = user !== null;
-  // const isLoggedIn = true;
+  console.log(user);
 
   useEffect(() => {
     // 每次路由變化就關閉選單
@@ -96,7 +95,7 @@ function Header() {
                     className="flex items-center gap-2"
                   >
                     <Avatar>
-                      <AvatarImage src={imgSrc} />
+                      <AvatarImage src={user.avatarUrl} />
                       <AvatarFallback>err</AvatarFallback>
                     </Avatar>
                     <p>{user.username}</p>

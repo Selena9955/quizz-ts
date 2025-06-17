@@ -13,8 +13,8 @@ interface User {
   status: string;
   role: string;
   bio: string;
-  avatarImg: string;
-  profileImg: string;
+  avatarUrl: string;
+  profileBgUrl: string;
 }
 
 interface AuthContextType {
