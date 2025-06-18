@@ -127,7 +127,7 @@
   margin-right: auto;
 
   @variant xl {
-    max-width: 80rem;
+    max-width: 76rem;
   }
 }
 

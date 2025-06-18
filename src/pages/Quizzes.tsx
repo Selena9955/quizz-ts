@@ -61,7 +61,7 @@ function Quizzes() {
     }
 
     fetchGetAll();
-  }, [location.pathname, currPage, filterType, pageSize]);
+  }, [location.key, currPage, filterType, pageSize]);
 
   useEffect(() => {
     setSearchParams({

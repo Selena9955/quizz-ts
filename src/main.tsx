@@ -18,6 +18,9 @@ import { AuthProvider } from "./context/AuthContext.tsx";
 import Profile from "./pages/Profile.tsx";
 import SearchResult from "./pages/SearchResult.tsx";
 import NotFound404 from "./pages/NotFound404.tsx";
+import DashboardLayout from "./components/DashboardLayout.tsx";
+import Admin from "./pages/Admin.tsx";
+import AdminTagPage from "./pages/AdminTagPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -55,6 +58,14 @@ const router = createBrowserRouter([
           { path: "verify", Component: Verify },
 
           { path: "*", Component: NotFound404 },
+        ],
+      },
+      {
+        path: "db",
+        Component: DashboardLayout,
+        children: [
+          { index: true, Component: Admin },
+          { path: "tag", Component: AdminTagPage },
         ],
       },
     ],
