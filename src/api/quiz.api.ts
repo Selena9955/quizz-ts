@@ -44,20 +44,18 @@ export async function getAllQuizzes(
 }
 
 export async function getQuizById(id: string | undefined) {
-  try {
-    const res = await fetch(`${API_BASE}/quizzes/${id}`, {
-      method: "GET",
-    });
-    const resData = await res.json();
-    if (!res.ok) {
-      throw new Error(resData.message || "取得失敗");
-    }
-    console.log(resData);
+  const res = await fetch(`${API_BASE}/quizzes/${id}`, {
+    method: "GET",
+  });
+  const resData = await res.json();
 
-    return resData.data;
-  } catch (err) {
-    console.error("getQuiz error:", err);
+  if (!res.ok) {
+    const error = new Error(resData.message || "取得失敗");
+    (error as any).status = res.status; // ✅ 加入 status 回傳
+    throw error;
   }
+
+  return resData.data;
 }
 
 export async function deleteQuizById(id: number) {
@@ -93,4 +91,22 @@ export async function updateQuiz(id: string, payload: QuizSubmitData) {
   } catch (err) {
     console.error("createQuiz error:", err);
   }
+}
+
+export async function recordAnswer(payload: {
+  quizId: number;
+  isCorrect: boolean;
+}) {
+  console.log(payload);
+
+  const res = await fetch(`${API_BASE}/quizzes/records`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify(payload),
+  });
+  const resData = await res.json();
+  if (!res.ok) throw new Error(resData.message || "記錄失敗");
+
+  return resData.data;
 }

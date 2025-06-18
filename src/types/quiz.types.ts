@@ -58,3 +58,9 @@ export type QuizDetailData = {
   multipleAnswerId: string[];
   flashAnswer: string;
 };
+
+export type QuizRecordStats = {
+  totalCount: number;
+  correctCount: number;
+  correctRate: number;
+};

@@ -200,9 +200,12 @@ function Quizzes() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
+
             <div className="grid divide-y rounded-md bg-white px-2 py-2 shadow-sm">
               {quizzes ? (
-                quizzes.map((quiz) => <QuizCard key={quiz.id} quiz={quiz} />)
+                quizzes.map((quiz) => (
+                  <QuizCard key={quiz.id} quiz={quiz} className="px-2 py-3" />
+                ))
               ) : (
                 <div className="grid min-h-20 place-content-center">
                   <p>無資料</p>
