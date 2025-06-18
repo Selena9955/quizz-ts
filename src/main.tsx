@@ -17,6 +17,7 @@ import AuthLayout from "./components/AuthLayout.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import Profile from "./pages/Profile.tsx";
 import SearchResult from "./pages/SearchResult.tsx";
+import NotFound404 from "./pages/NotFound404.tsx";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,8 @@ const router = createBrowserRouter([
           { path: "tags", Component: Tags },
           { path: "users/:username", Component: Profile },
           { path: "search", Component: SearchResult },
+
+          { path: "*", Component: NotFound404 },
         ],
       },
       {
@@ -50,10 +53,13 @@ const router = createBrowserRouter([
           { path: "login", Component: Login },
           { path: "register", Component: Register },
           { path: "verify", Component: Verify },
+
+          { path: "*", Component: NotFound404 },
         ],
       },
     ],
   },
+  { path: "*", Component: NotFound404 },
 ]);
 
 createRoot(document.getElementById("root")!).render(
