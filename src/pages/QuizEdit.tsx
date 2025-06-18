@@ -156,17 +156,16 @@ function QuizEdit() {
       tags: tags,
     };
     if (id) {
-      console.log(payload);
       updateQuiz(id, payload);
       toast.success("修改成功");
-      navigate("/quizzes");
+      navigate("/quizzes", { replace: true });
     } else {
       try {
         createQuiz(payload);
         initStatus();
         if (!hasMoreAdd) {
           setQuizType(QuizTypeType.Single);
-          navigate("/quizzes");
+          navigate("/quizzes", { replace: true });
         }
       } catch (err) {
         alert("新增失敗，請稍後再嘗試");
@@ -175,7 +174,7 @@ function QuizEdit() {
   }
 
   return (
-    <>
+    <div div className="defaultP">
       <div className="mx-auto mb-16 max-w-200 rounded-lg border bg-white p-4">
         <section className="mb-10">
           <div className="flex flex-col items-end gap-2 md:flex-row-reverse md:items-center">
@@ -277,7 +276,7 @@ function QuizEdit() {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

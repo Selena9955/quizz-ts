@@ -6,19 +6,30 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 type QuizCardProps = {
   quiz: QuizListData;
+  className?: string;
 };
 
-function QuizCard({ quiz }: QuizCardProps) {
+function QuizCard({ quiz, className }: QuizCardProps) {
   const {
     id,
     quizType,
     title,
-    authorName = "未知使用者",
-    tags = [],
-    createTime = "2025-06-01T12:00:00", // 假資料
-    answerRate = 0.62, // 假資料
-    avatarUrl = "https://picsum.photos/48", // 假資料
-  } = quiz;
+    authorName,
+    tags,
+    createTime,
+    answerRate,
+    avatarUrl,
+  } = {
+    id: 0,
+    quizType: 0,
+    title: "模板標題",
+    authorName: "未知使用者",
+    tags: [],
+    createTime: "2025-06-01T12:00:00",
+    answerRate: 0.62,
+    avatarUrl: "https://picsum.photos/48",
+    ...quiz, // quiz 中有的會覆蓋上面預設值
+  };
 
   const difficultyColor = (rate: number) => {
     if (rate >= 0.8) return "text-green-600";
@@ -27,8 +38,8 @@ function QuizCard({ quiz }: QuizCardProps) {
   };
 
   return (
-    <Link to={`/quizzes/${id}`} className="group space-y-2 px-2 py-3">
-      <div className="flex justify-between gap-4 transition">
+    <Link to={`/quizzes/${id}`} className={cn("group", className)}>
+      <div className="flex justify-between space-y-2 transition">
         <div className="text-muted-foreground mt-1 flex items-center gap-3 text-xs">
           <span className="text-secondary">
             {QuizTypeLabels[quizType] ?? "未知"}
@@ -52,19 +63,18 @@ function QuizCard({ quiz }: QuizCardProps) {
           {(answerRate * 100).toFixed(0)}%
         </div>
       </div>
-      <div className="flex">
+
+      <div className="items-center md:flex md:justify-between">
         {/* 標題 */}
-        <div className="flex min-w-0 flex-1 flex-col">
-          <h3 className="text-foreground group-hover:text-primary text-lg font-semibold break-words md:truncate">
-            {title}
-          </h3>
-        </div>
+        <h3 className="text-foreground group-hover:text-primary text-lg font-semibold break-words md:truncate">
+          {title}
+        </h3>
 
         {/* 桌：標籤 */}
-        <div className="hidden flex-wrap justify-end gap-1 md:flex">
+        <div className="mt-2 flex flex-wrap items-center gap-1 md:mt-0">
           {tags.length > 0 ? (
             tags.map((tag, index) => (
-              <Badge key={index} variant="secondary" size="sm">
+              <Badge key={index} size="sm">
                 {tag}
               </Badge>
             ))
@@ -72,18 +82,6 @@ function QuizCard({ quiz }: QuizCardProps) {
             <span className="text-muted-foreground text-xs">無標籤</span>
           )}
         </div>
-      </div>
-      {/* 手：標籤 */}
-      <div className="flex flex-wrap gap-1 md:hidden">
-        {tags.length > 0 ? (
-          tags.map((tag, index) => (
-            <Badge key={index} variant="default" size="sm">
-              {tag}
-            </Badge>
-          ))
-        ) : (
-          <span className="text-muted-foreground text-xs">無標籤</span>
-        )}
       </div>
     </Link>
   );
