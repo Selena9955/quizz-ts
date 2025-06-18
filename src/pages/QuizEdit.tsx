@@ -159,14 +159,14 @@ function QuizEdit() {
       console.log(payload);
       updateQuiz(id, payload);
       toast.success("修改成功");
-      navigate("/quizzes", { state: { shouldRefresh: true } });
+      navigate("/quizzes");
     } else {
       try {
         createQuiz(payload);
         initStatus();
         if (!hasMoreAdd) {
           setQuizType(QuizTypeType.Single);
-          navigate("/quizzes", { state: { shouldRefresh: true } });
+          navigate("/quizzes");
         }
       } catch (err) {
         alert("新增失敗，請稍後再嘗試");

@@ -15,8 +15,8 @@ type PaginationGroupProps = {
 };
 
 function PaginationGroup({
-  currentPage,
-  totalPages,
+  currentPage = 1,
+  totalPages = 1,
   onPageChange,
 }: PaginationGroupProps) {
   // 顯示最多 5 個頁碼

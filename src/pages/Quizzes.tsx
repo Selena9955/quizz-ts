@@ -52,21 +52,16 @@ function Quizzes() {
   ]);
 
   useEffect(() => {
-    const shouldRefresh = location.state?.shouldRefresh;
     async function fetchGetAll() {
       const data = await getAllQuizzes(filterType, currPage, pageSize);
+      console.log(data);
 
       setQuizzes(data.items);
       setAllPage(data.totalPages);
     }
 
-    if (shouldRefresh) {
-      navigate(location.pathname, { replace: true });
-      fetchGetAll();
-      return;
-    }
     fetchGetAll();
-  }, [location.key, currPage, filterType, pageSize]);
+  }, [location.pathname, currPage, filterType, pageSize]);
 
   useEffect(() => {
     setSearchParams({
@@ -206,9 +201,13 @@ function Quizzes() {
               </DropdownMenu>
             </div>
             <div className="grid divide-y rounded-md bg-white px-2 py-2 shadow-sm">
-              {quizzes.map((quiz) => (
-                <QuizCard key={quiz.id} quiz={quiz} />
-              ))}
+              {quizzes ? (
+                quizzes.map((quiz) => <QuizCard key={quiz.id} quiz={quiz} />)
+              ) : (
+                <div className="grid min-h-20 place-content-center">
+                  <p>無資料</p>
+                </div>
+              )}
             </div>
 
             <PaginationGroup
