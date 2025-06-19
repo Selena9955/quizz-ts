@@ -21,6 +21,7 @@ import NotFound404 from "./pages/NotFound404.tsx";
 import DashboardLayout from "./components/DashboardLayout.tsx";
 import Admin from "./pages/Admin.tsx";
 import AdminTagPage from "./pages/AdminTagPage.tsx";
+import AdminMember from "./pages/AdminMember.tsx";
 
 const router = createBrowserRouter([
   {
@@ -65,7 +66,8 @@ const router = createBrowserRouter([
         Component: DashboardLayout,
         children: [
           { index: true, Component: Admin },
-          { path: "tag", Component: AdminTagPage },
+          { path: "members", Component: AdminMember },
+          { path: "tags", Component: AdminTagPage },
         ],
       },
     ],

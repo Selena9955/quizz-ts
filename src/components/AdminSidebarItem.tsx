@@ -21,10 +21,7 @@ export function AdminSidebarItem({
   const { setUser } = useAuth();
 
   const isLogout = path === "/auth/logout";
-  const isActive =
-    path === "/"
-      ? location.pathname === "/"
-      : location.pathname.startsWith(path);
+  const isActive = location.pathname === path;
 
   const handleClick = async () => {
     if (isLogout) {
