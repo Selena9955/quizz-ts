@@ -35,3 +35,10 @@ export type ProfileFormData = {
   avatarUrl: string;
   profileBgUrl: string;
 };
+
+export type userCardData = {
+  id: number;
+  username: string;
+  avatarUrl: string;
+  bio: string;
+};

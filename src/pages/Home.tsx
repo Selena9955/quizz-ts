@@ -1,8 +1,10 @@
 import QuizCard from "@/components/QuizCard";
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 function Home() {
+  const navigate = useNavigate();
+  const [inputValue, setInputValue] = useState<string>("");
   const [hotTags, setHotTags] = useState<string[]>([
     "設計",
     "程式",
@@ -15,6 +17,15 @@ function Home() {
     "設計",
     "程式",
   ]);
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key !== "Enter") return;
+    if (inputValue.trim()) {
+      const query = `q=${encodeURIComponent(inputValue)}`;
+      setInputValue("");
+      navigate(`/search?${query}`);
+    }
+  }
 
   return (
     <>
@@ -32,8 +43,11 @@ function Home() {
             <div className="z-10 mt-3 w-full max-w-xl">
               <input
                 type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
                 placeholder="搜尋文章、題目、作者..."
                 className="w-full rounded-xl bg-white px-4 py-3 text-black shadow-md"
+                onKeyDown={handleKeyDown}
               />
             </div>
           </div>

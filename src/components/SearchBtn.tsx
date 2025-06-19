@@ -51,6 +51,7 @@ function SearchBtn() {
       navigate(`/search?${query}`);
     }
   }
+
   function handleHistoryClick(word: string) {
     setInputValue(word);
   }
