@@ -9,7 +9,6 @@ import QuizDetail from "./pages/QuizDetail.tsx";
 import Articles from "./pages/Articles.tsx";
 import ArticleEditor from "./pages/ArticleEditor.tsx";
 import ArticleDetail from "./pages/ArticleDetail.tsx";
-import Tags from "./pages/Tags.tsx";
 import Login from "./pages/Login.tsx";
 import Register from "./pages/Register.tsx";
 import Verify from "./pages/Verify.tsx";
@@ -43,7 +42,6 @@ const router = createBrowserRouter([
           { path: "articles/new", Component: ArticleEditor },
           { path: "articles/:id/edit", Component: ArticleEditor },
           { path: "articles/:id", Component: ArticleDetail },
-          { path: "tags", Component: Tags },
           { path: "users/:username", Component: Profile },
           { path: "search", Component: SearchResult },
 

@@ -110,3 +110,18 @@ export async function recordAnswer(payload: {
 
   return resData.data;
 }
+
+export async function getLatestQuizzes() {
+  const res = await fetch(`${API_BASE}/quizzes/latest`, {
+    method: "GET",
+  });
+  const resData = await res.json();
+
+  if (!res.ok) {
+    const error = new Error(resData.message || "取得失敗");
+    (error as any).status = res.status; // ✅ 加入 status 回傳
+    throw error;
+  }
+
+  return resData.data;
+}

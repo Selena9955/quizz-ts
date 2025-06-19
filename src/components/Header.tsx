@@ -18,7 +18,6 @@ import { logout } from "@/api/auth.api";
 const MenuList = [
   { name: "題庫", path: "/quizzes" },
   { name: "討論區", path: "/articles" },
-  { name: "TAGs", path: "/tags" },
 ];
 
 function Header() {

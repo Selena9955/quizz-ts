@@ -1,10 +1,14 @@
+import { getLatestQuizzes } from "@/api/quiz.api";
 import QuizCard from "@/components/QuizCard";
-import { useState } from "react";
+import type { QuizListData } from "@/types/quiz.types";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 
 function Home() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState<string>("");
+  const [latestQuizzes, setLatestQuizzes] = useState<QuizListData[]>([]);
   const [hotTags, setHotTags] = useState<string[]>([
     "設計",
     "程式",
@@ -17,6 +21,18 @@ function Home() {
     "設計",
     "程式",
   ]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await getLatestQuizzes();
+        setLatestQuizzes(data);
+      } catch (err: any) {
+        toast.error(err.message);
+      }
+    }
+    fetchData();
+  }, []);
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key !== "Enter") return;
@@ -73,9 +89,12 @@ function Home() {
         <section className="bg-gray-50 py-20">
           <h2 className="mb-6 text-center text-2xl font-bold">最新上架</h2>
           <div className="mx-auto max-w-4xl space-y-4 px-4">
-            {[0, 1, 2].map((i) => (
-              <div className="rounded-xl bg-white p-4 shadow hover:shadow-lg">
-                <QuizCard />
+            {latestQuizzes.map((quiz) => (
+              <div
+                key={quiz.id}
+                className="rounded-xl bg-white p-4 shadow hover:shadow-lg"
+              >
+                <QuizCard quiz={quiz} />
               </div>
             ))}
           </div>

@@ -57,47 +57,49 @@ function ArticleDetail() {
   if (!article) return <p>載入中...</p>;
 
   return (
-    <article className="rounded-md bg-white p-3 md:p-8 lg:mx-20">
-      <div className="flex gap-2">
-        {article.tags.map((tag, index) => (
-          <Badge key={index} variant="secondary" size="sm">
-            {tag}
-          </Badge>
-        ))}
-      </div>
-      <h1 className="mt-3 text-3xl font-bold">{article.title}</h1>
-      <div className="flex justify-between">
-        <div className="text-muted-foreground flex flex-wrap items-center gap-2">
-          <div>{article.author.username}</div>
-          <p className="text-xs">
-            {article.createTime.slice(0, 10)}
-            {article.createTime.slice(0, 10) !==
-              article.updateTime.slice(0, 10) && (
-              <>（更新：{article.updateTime.slice(0, 10)}）</>
-            )}
-          </p>
+    <div className="defaultP container">
+      <article className="rounded-md bg-white p-3 md:p-8 lg:mx-20">
+        <div className="flex gap-2">
+          {article.tags.map((tag, index) => (
+            <Badge key={index} variant="secondary" size="sm">
+              {tag}
+            </Badge>
+          ))}
         </div>
-        {isAuthor && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost">
-                <Ellipsis />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem asChild>
-                <Link to={`/articles/${article.id}/edit`}>修改</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleDelete(article.id)}>
-                刪除
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
-      </div>
-      <hr className="mt-2 mb-5" />
-      <div dangerouslySetInnerHTML={{ __html: article.content }} />
-    </article>
+        <h1 className="mt-3 text-3xl font-bold">{article.title}</h1>
+        <div className="flex justify-between">
+          <div className="text-muted-foreground flex flex-wrap items-center gap-2">
+            <div>{article.author.username}</div>
+            <p className="text-xs">
+              {article.createTime.slice(0, 10)}
+              {article.createTime.slice(0, 10) !==
+                article.updateTime.slice(0, 10) && (
+                <>（更新：{article.updateTime.slice(0, 10)}）</>
+              )}
+            </p>
+          </div>
+          {isAuthor && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost">
+                  <Ellipsis />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuItem asChild>
+                  <Link to={`/articles/${article.id}/edit`}>修改</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleDelete(article.id)}>
+                  刪除
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+        </div>
+        <hr className="mt-2 mb-5" />
+        <div dangerouslySetInnerHTML={{ __html: article.content }} />
+      </article>
+    </div>
   );
 }
 

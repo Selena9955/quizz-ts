@@ -58,7 +58,7 @@ function ArticleNew() {
   }
 
   return (
-    <div>
+    <div className="defaultP container">
       <InputField
         label="標題"
         labelClassName=" text-base  md:text-lg  font-semibold"

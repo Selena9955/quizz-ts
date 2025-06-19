@@ -211,13 +211,19 @@ function Profile() {
           </TabsList>
 
           <TabsContent value="quizzes" className="space-y-3">
-            {quizzes && quizzes.length > 0 ? (
-              quizzes.map((quiz) => <QuizCard key={quiz.id} quiz={quiz} />)
-            ) : (
-              <div className="grid min-h-40 place-items-center">
-                <p>尚未發表任何題目</p>
-              </div>
-            )}
+            <div className="space-y-3">
+              {quizzes && quizzes.length > 0 ? (
+                quizzes.map((quiz) => (
+                  <div className="rounded-md bg-white p-2 shadow md:px-4">
+                    <QuizCard key={quiz.id} quiz={quiz} />
+                  </div>
+                ))
+              ) : (
+                <div className="grid min-h-40 place-items-center">
+                  <p>尚未發表任何題目</p>
+                </div>
+              )}
+            </div>
           </TabsContent>
 
           <TabsContent value="articles" className="space-y-3">

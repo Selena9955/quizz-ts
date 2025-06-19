@@ -39,7 +39,7 @@ function QuizCard({ quiz, className }: QuizCardProps) {
 
   return (
     <Link to={`/quizzes/${id}`} className={cn("group", className)}>
-      <div className="flex justify-between space-y-2 transition">
+      <div className="flex justify-between space-y-2 bg-white transition">
         <div className="text-muted-foreground mt-1 flex items-center gap-3 text-xs">
           <span className="text-secondary">
             {QuizTypeLabels[quizType] ?? "未知"}
