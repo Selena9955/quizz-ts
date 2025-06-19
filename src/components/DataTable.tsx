@@ -36,7 +36,7 @@ type DataTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   filterKey?: keyof TData;
   filterPlaceholder?: string;
-  onSearch?: (value: string) => void;
+  onRowSelectionChange?: (selectedRows: TData[]) => void;
 };
 
 export function DataTable<TData, TValue>({
@@ -44,11 +44,13 @@ export function DataTable<TData, TValue>({
   columns,
   filterKey,
   filterPlaceholder = "Filter...",
+  onRowSelectionChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     [],
   );
+
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
@@ -71,6 +73,15 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   });
+
+  React.useEffect(() => {
+    if (onRowSelectionChange) {
+      const selected = table
+        .getSelectedRowModel()
+        .rows.map((r) => r.original as TData);
+      onRowSelectionChange(selected);
+    }
+  }, [rowSelection]);
 
   function getAlignClass(align?: string) {
     if (align === "center") return "text-center";

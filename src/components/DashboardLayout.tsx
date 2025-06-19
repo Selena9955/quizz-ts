@@ -13,6 +13,7 @@ import { Link, useLocation, Outlet, useNavigate } from "react-router";
 import { cn } from "@/lib/utils";
 import { AdminSidebarItem } from "./AdminSidebarItem";
 import { useAdminGuard } from "@/hooks/useAdminGuard";
+import { Toaster } from "sonner";
 
 const MainMenu = [
   { label: "總覽", path: "/db", icon: LayoutDashboard },
@@ -97,6 +98,7 @@ export default function DashboardLayout() {
         <main className="flex-1 overflow-y-auto bg-gray-100">
           <div className="3xl:py-12 3xl:px-20 max-w-dvw p-3 sm:p-8">
             <Outlet />
+            <Toaster richColors position="bottom-right" expand={true} />
           </div>
         </main>
       </div>

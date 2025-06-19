@@ -1,17 +1,22 @@
 import { DataTable } from "@/components/DataTable";
-import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   type AccessorColumnDef,
-  type ColumnDef,
   type DisplayColumnDef,
   type GroupColumnDef,
   type RowData,
 } from "@tanstack/react-table";
 import { useEffect, useState } from "react";
-import { dbGetAllUsers } from "@/api/admin.api";
+import { dbChangeRoleByIds, dbGetAllUsers } from "@/api/admin.api";
 import type { AdminUserData } from "@/types/admin.types";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { toast } from "sonner";
 
 type Align = "left" | "center" | "right";
 
@@ -102,24 +107,65 @@ const columns: ExtendedColumnDef<AdminUserData>[] = [
 
 export default function AdminMember() {
   const [users, setUsers] = useState<AdminUserData[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<AdminUserData[]>([]);
 
   useEffect(() => {
     async function fetchData() {
       const data = await dbGetAllUsers();
-      console.log(data);
       setUsers(data || []);
     }
 
     fetchData();
   }, []);
 
+  async function handleRoleChange(event: React.MouseEvent<HTMLDivElement>) {
+    const role = event.currentTarget.getAttribute("data-value") as
+      | "USER"
+      | "ADMIN";
+    if (!role) return;
+    if (selectedUsers.length === 0) {
+      toast.error("請先勾選使用者");
+      return;
+    }
+
+    const ids = selectedUsers.map((u) => u.id);
+    try {
+      const resData = await dbChangeRoleByIds(ids, role);
+      setUsers(resData);
+    } catch (err: any) {
+      toast.error("修改身分失敗 - " + err.message);
+    }
+  }
+
   return (
     <section className="rounded-md bg-white p-3">
+      <div className="flex items-center">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">切換身分</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start">
+            <DropdownMenuCheckboxItem
+              data-value="USER"
+              onClick={handleRoleChange}
+            >
+              USER
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              data-value="ADMIN"
+              onClick={handleRoleChange}
+            >
+              ADMIN
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <DataTable
         data={users}
         columns={columns}
         filterKey="email"
         filterPlaceholder="搜尋 Email..."
+        onRowSelectionChange={setSelectedUsers}
       />
     </section>
   );
