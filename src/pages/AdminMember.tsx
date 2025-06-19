@@ -66,8 +66,19 @@ const columns: ExtendedColumnDef<AdminUserData>[] = [
   {
     accessorKey: "role",
     header: "身分",
+    cell: ({ row }) => {
+      const role = row.getValue("role");
 
-    cell: ({ row }) => <div>{row.getValue("role")}</div>,
+      const roleColor = {
+        USER: "text-gray-700",
+        ADMIN: "text-secondary",
+        ROOT: "text-primary",
+      };
+
+      return (
+        <div className={roleColor[role] || "text-muted-foreground"}>{role}</div>
+      );
+    },
   },
   {
     accessorKey: "status",
@@ -131,7 +142,7 @@ export default function AdminMember() {
     const ids = selectedUsers.map((u) => u.id);
     try {
       const resData = await dbChangeRoleByIds(ids, role);
-      setUsers(resData);
+      setUsers(resData || []);
     } catch (err: any) {
       toast.error("修改身分失敗 - " + err.message);
     }
