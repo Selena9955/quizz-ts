@@ -174,7 +174,7 @@ function QuizEdit() {
   }
 
   return (
-    <div div className="defaultP">
+    <div className="defaultP">
       <div className="mx-auto mb-16 max-w-200 rounded-lg border bg-white p-4">
         <section className="mb-10">
           <div className="flex flex-col items-end gap-2 md:flex-row-reverse md:items-center">

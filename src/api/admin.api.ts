@@ -39,3 +39,22 @@ export async function dbChangeRoleByIds(
 
   return resData.data;
 }
+
+export async function dbGetTagTsage() {
+  try {
+    const res = await fetch(`${API_BASE}/db/tag-usage?type=QUIZ`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    const resData = await res.json();
+    if (!res.ok) {
+      throw new Error(resData.message || "取得失敗");
+    }
+
+    return resData;
+  } catch (err) {
+    console.error("dbGetAllUsers", err);
+    throw err;
+  }
+}

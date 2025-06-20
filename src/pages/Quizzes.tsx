@@ -39,7 +39,6 @@ const mockUser = {
 function Quizzes() {
   const { user } = useAuth();
   const location = useLocation();
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [quizzes, setQuizzes] = useState<QuizListData[]>([]);
   const [filterType, setFilterType] = useState<FilterType>("ALL");
