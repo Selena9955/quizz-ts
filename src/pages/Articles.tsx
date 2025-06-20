@@ -7,11 +7,11 @@ import type { ArticleListType } from "@/types/article.types";
 
 function Articles() {
   const [articles, setArticles] = useState<ArticleListType[]>([]);
+
   useEffect(() => {
     async function fetchArticles() {
       const data = await getAllArticles();
       setArticles(data.data);
-      console.log(data);
     }
     fetchArticles();
   }, []);
@@ -29,7 +29,7 @@ function Articles() {
           </TabsTrigger>
         </TabsList>
         <div className="bg-muted mt-3 rounded-md">
-          <TabsContent value="new" className="space-y-2">
+          <TabsContent value="new" className="space-y-3">
             {articles &&
               articles.map((article, index) => (
                 <ArticleCard key={index} article={article} />

@@ -20,7 +20,7 @@ function Article({ article, className }: ArticleProps) {
       >
         <div className="flex items-center gap-2">
           <Avatar className="size-7">
-            <AvatarImage src="https://i0.wp.com/kevins-life.com/wp-content/uploads/2023/07/meme-marketing-2.png?resize=600%2C432&ssl=1" />
+            <AvatarImage src={article.author.avatarUrl} />
             <AvatarFallback>13</AvatarFallback>
           </Avatar>
           <p>{article.author.username}</p>
@@ -30,7 +30,7 @@ function Article({ article, className }: ArticleProps) {
         </div>
         <hr className="mt-2 mb-3" />
         <h3 className="mb-2 text-2xl font-bold">{article.title}</h3>
-        <p className="text-muted-foreground line-clamp-3">
+        <p className="text-muted-foreground line-clamp-2">
           {article.previewContent}
         </p>
 

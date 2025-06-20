@@ -37,9 +37,17 @@ export type QuizListData = {
   id: number;
   authorId: number;
   authorName: string;
+  avatarUrl: string;
   quizType: QuizTypeValue;
   title: string;
   tags: string[];
+  quizStats: QuizStats;
+};
+
+export type QuizStats = {
+  correctCount: number;
+  correctRate: number;
+  totalCount: number;
 };
 
 export type QuizDetailData = {

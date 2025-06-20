@@ -10,26 +10,7 @@ type QuizCardProps = {
 };
 
 function QuizCard({ quiz, className }: QuizCardProps) {
-  const {
-    id,
-    quizType,
-    title,
-    authorName,
-    tags,
-    createTime,
-    answerRate,
-    avatarUrl,
-  } = {
-    id: 0,
-    quizType: 0,
-    title: "模板標題",
-    authorName: "未知使用者",
-    tags: [],
-    createTime: "2025-06-01T12:00:00",
-    answerRate: 0.62,
-    avatarUrl: "https://picsum.photos/48",
-    ...quiz, // quiz 中有的會覆蓋上面預設值
-  };
+  const { id, quizType, title, authorName, tags, quizStats, avatarUrl } = quiz;
 
   const difficultyColor = (rate: number) => {
     if (rate >= 0.8) return "text-green-600";
@@ -47,7 +28,7 @@ function QuizCard({ quiz, className }: QuizCardProps) {
 
           <div className="flex items-center gap-1">
             <Avatar className="h-5 w-5">
-              <AvatarImage src={"https://picsum.photos/48"} />
+              <AvatarImage src={avatarUrl} />
               <AvatarFallback>D</AvatarFallback>
             </Avatar>
             <p>{authorName}</p>
@@ -56,11 +37,12 @@ function QuizCard({ quiz, className }: QuizCardProps) {
         {/* 難度 / 答對率 */}
         <div
           className={cn(
-            "hidden text-sm font-medium group-hover:block",
-            difficultyColor(answerRate),
+            "hidden items-center gap-1 text-sm font-medium group-hover:flex",
+            difficultyColor(quizStats.correctRate),
           )}
         >
-          {(answerRate * 100).toFixed(0)}%
+          <span>{Math.round(quizStats.correctRate * 100)}% · </span>
+          <span> {quizStats.totalCount} 人</span>
         </div>
       </div>
 

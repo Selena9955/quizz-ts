@@ -14,6 +14,7 @@ export type ArticleListType = {
   author: {
     id: number;
     username: string;
+    avatarUrl: string;
   };
 };
 
@@ -27,5 +28,6 @@ export type ArticleDetailType = {
   author: {
     id: number;
     username: string;
+    avatarUrl: string;
   };
 };

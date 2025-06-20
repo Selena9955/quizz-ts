@@ -59,41 +59,43 @@ function ArticleNew() {
 
   return (
     <div className="defaultP container">
-      <InputField
-        label="標題"
-        labelClassName=" text-base  md:text-lg  font-semibold"
-        placeholder="請輸入標題"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-
-      <Label className="mt-6 mb-2 text-base font-semibold md:text-lg">
-        內文
-      </Label>
-      <QuillEditor
-        value={editorValue}
-        onChange={setEditorValue}
-        ref={editorRef}
-      />
-
-      <div className="mt-5 space-y-3">
-        <h6 className="font-semibold">標籤</h6>
-        <TagsInput
-          selectedTags={selectedTags}
-          onChangeSelectedTags={setSelectedTags}
+      <div className="mx-auto rounded-md bg-white px-3 py-6 lg:max-w-240 lg:px-8 lg:py-10">
+        <InputField
+          label="標題"
+          labelClassName=" text-base  md:text-lg  font-semibold"
+          placeholder="請輸入標題"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
         />
-      </div>
 
-      <div className="mt-6 flex justify-end">
-        {id ? (
-          <Button size="lg" onClick={handleSubmit}>
-            保存修改
-          </Button>
-        ) : (
-          <Button size="lg" onClick={handleSubmit}>
-            新增文章
-          </Button>
-        )}
+        <Label className="mt-6 mb-2 text-base font-semibold md:text-lg">
+          內文
+        </Label>
+        <QuillEditor
+          value={editorValue}
+          onChange={setEditorValue}
+          ref={editorRef}
+        />
+
+        <div className="mt-5 space-y-3">
+          <h6 className="font-semibold">標籤</h6>
+          <TagsInput
+            selectedTags={selectedTags}
+            onChangeSelectedTags={setSelectedTags}
+          />
+        </div>
+
+        <div className="mt-6 flex justify-end lg:justify-center">
+          {id ? (
+            <Button size="xl" onClick={handleSubmit}>
+              保存修改
+            </Button>
+          ) : (
+            <Button size="xl" onClick={handleSubmit}>
+              新增文章
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );

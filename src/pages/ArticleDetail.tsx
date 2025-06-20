@@ -1,4 +1,9 @@
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router";
+import { Ellipsis } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 import { deleteArticle, getArticleById } from "@/api/article.api";
+import type { ArticleDetailType } from "@/types/article.types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,11 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuth } from "@/context/AuthContext";
-import type { ArticleDetailType } from "@/types/article.types";
-import { Ellipsis } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function ArticleDetail() {
   const { user } = useAuth();
@@ -28,6 +29,7 @@ function ArticleDetail() {
           return;
         }
         const data = await getArticleById(id);
+        console.log(data);
 
         setArticle(data.data);
         setIsAuthor(data.data.author.id === user?.id);
@@ -67,8 +69,12 @@ function ArticleDetail() {
           ))}
         </div>
         <h1 className="mt-3 text-3xl font-bold">{article.title}</h1>
-        <div className="flex justify-between">
+        <div className="mt-2 flex justify-between">
           <div className="text-muted-foreground flex flex-wrap items-center gap-2">
+            <Avatar className="size-7">
+              <AvatarImage src={article.author.avatarUrl} />
+              <AvatarFallback>13</AvatarFallback>
+            </Avatar>
             <div>{article.author.username}</div>
             <p className="text-xs">
               {article.createTime.slice(0, 10)}
