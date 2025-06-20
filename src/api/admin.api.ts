@@ -51,6 +51,7 @@ export async function dbGetTagTsage() {
     if (!res.ok) {
       throw new Error(resData.message || "取得失敗");
     }
+    console.log(resData);
 
     return resData;
   } catch (err) {
