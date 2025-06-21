@@ -39,6 +39,7 @@ const mockUser = {
 function Quizzes() {
   const { user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [quizzes, setQuizzes] = useState<QuizListData[]>([]);
   const [filterType, setFilterType] = useState<FilterType>("ALL");
@@ -51,16 +52,25 @@ function Quizzes() {
   ]);
 
   useEffect(() => {
-    async function fetchGetAll() {
-      const data = await getAllQuizzes(filterType, currPage, pageSize);
-      console.log(data);
+    if (location.state?.reload) {
+      fetchGetAll();
 
-      setQuizzes(data.items);
-      setAllPage(data.totalPages);
+      // 清除 reload state（防止重整又觸發）
+      navigate(location.pathname, { replace: true });
     }
+  }, [location]);
 
+  useEffect(() => {
     fetchGetAll();
   }, [location.key, currPage, filterType, pageSize]);
+
+  async function fetchGetAll() {
+    const data = await getAllQuizzes(filterType, currPage, pageSize);
+    console.log(data);
+
+    setQuizzes(data.items);
+    setAllPage(data.totalPages);
+  }
 
   useEffect(() => {
     setSearchParams({

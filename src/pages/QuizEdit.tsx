@@ -55,12 +55,12 @@ function QuizEdit() {
 
   useEffect(() => {
     if (id) {
-      console.log(id);
       async function fetchData() {
         try {
           const resData = await getQuizById(id);
-          const data = resData.data;
+          const data = resData;
           const tagNames: string[] = data.tags.map((tag) => tag.name);
+
           setTitle(data.title);
           setTitleDetail(data.titleDetail);
           setAnswerDetail(data.answerDetail);
@@ -158,14 +158,20 @@ function QuizEdit() {
     if (id) {
       updateQuiz(id, payload);
       toast.success("修改成功");
-      navigate("/quizzes", { replace: true });
+      navigate("/quizzes", {
+        replace: true,
+        state: { reload: true },
+      });
     } else {
       try {
         createQuiz(payload);
         initStatus();
         if (!hasMoreAdd) {
           setQuizType(QuizTypeType.Single);
-          navigate("/quizzes", { replace: true });
+          navigate("/quizzes", {
+            replace: true,
+            state: { reload: true },
+          });
         }
       } catch (err) {
         alert("新增失敗，請稍後再嘗試");
