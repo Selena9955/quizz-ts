@@ -1,6 +1,8 @@
 import { getLatestQuizzes } from "@/api/quiz.api";
+import { getHomeHotTags } from "@/api/tag.api";
 import QuizCard from "@/components/QuizCard";
 import type { QuizListData } from "@/types/quiz.types";
+import type { TagData } from "@/types/tag.types";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -9,30 +11,30 @@ function Home() {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState<string>("");
   const [latestQuizzes, setLatestQuizzes] = useState<QuizListData[]>([]);
-  const [hotTags, setHotTags] = useState<string[]>([
-    "設計",
-    "程式",
-    "醫學",
-    "語言",
-    "設計",
-    "程式",
-    "醫學",
-    "語言",
-    "設計",
-    "程式",
-  ]);
+  const [hotTags, setHotTags] = useState<TagData[]>([]);
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const data = await getLatestQuizzes();
-        setLatestQuizzes(data);
-      } catch (err: any) {
-        toast.error(err.message);
-      }
-    }
-    fetchData();
+    fetchLatestQuizzes();
+    fetchHotTags();
   }, []);
+
+  async function fetchLatestQuizzes() {
+    try {
+      const data = await getLatestQuizzes();
+      setLatestQuizzes(data);
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  }
+
+  async function fetchHotTags() {
+    try {
+      const data = await getHomeHotTags();
+      setHotTags(data);
+    } catch (err: any) {
+      toast.error(err.message);
+    }
+  }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key !== "Enter") return;
@@ -73,13 +75,13 @@ function Home() {
         <section className="bg-white py-20 text-center">
           <h2 className="mb-6 text-2xl font-bold">探索熱門標籤</h2>
           <div className="container mx-auto grid max-w-5xl grid-cols-2 gap-6 md:grid-cols-5">
-            {hotTags.map((category) => (
+            {hotTags.map((tag) => (
               <Link
-                key={category}
+                key={tag.id}
                 to=""
                 className="hover:bg-secondary/80 cursor-pointer rounded-xl bg-gray-100 p-6 hover:text-white hover:shadow"
               >
-                <p className="text-lg font-semibold">{category}</p>
+                <p className="text-lg font-semibold">{tag.name}</p>
               </Link>
             ))}
           </div>

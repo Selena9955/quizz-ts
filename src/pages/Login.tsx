@@ -56,15 +56,15 @@ function Login() {
           onChange={handleFormChange}
         />
       </div>
-      <div className="flex justify-end">
+      {/* <div className="flex justify-end">
         <Link
           to=""
           className="text-muted-foreground hover:text-muted-foreground/80"
         >
           忘記密碼?
         </Link>
-      </div>
-      <div className="text-center">
+      </div> */}
+      <div className="mt-8 text-center">
         <Button type="submit" className="w-full text-center">
           登入
         </Button>
