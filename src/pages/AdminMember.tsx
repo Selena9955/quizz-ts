@@ -1,3 +1,7 @@
+import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import type { AdminUserData } from "@/types/admin.types";
+import { dbChangeRoleByIds, dbGetAllUsers } from "@/api/admin.api";
 import { DataTable } from "@/components/DataTable";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -7,9 +11,6 @@ import {
   type GroupColumnDef,
   type RowData,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
-import { dbChangeRoleByIds, dbGetAllUsers } from "@/api/admin.api";
-import type { AdminUserData } from "@/types/admin.types";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -117,6 +118,7 @@ const columns: ExtendedColumnDef<AdminUserData>[] = [
 ];
 
 export default function AdminMember() {
+  const { user } = useAuth();
   const [users, setUsers] = useState<AdminUserData[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<AdminUserData[]>([]);
 
@@ -149,35 +151,52 @@ export default function AdminMember() {
   }
 
   return (
-    <section className="rounded-md bg-white p-3">
-      <div className="flex items-center">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline">切換身分</Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start">
-            <DropdownMenuCheckboxItem
-              data-value="USER"
-              onClick={handleRoleChange}
-            >
-              USER
-            </DropdownMenuCheckboxItem>
-            <DropdownMenuCheckboxItem
-              data-value="ADMIN"
-              onClick={handleRoleChange}
-            >
-              ADMIN
-            </DropdownMenuCheckboxItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      <DataTable
-        data={users}
-        columns={columns}
-        filterKey="email"
-        filterPlaceholder="搜尋 Email..."
-        onRowSelectionChange={setSelectedUsers}
-      />
-    </section>
+    <div className="min-h-screen p-2 pr-4 md:p-6">
+      <section className="grid md:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-xl bg-white p-5 shadow-md">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="text-2xl font-semibold text-gray-800">
+                {user?.username}
+              </div>
+              <div className="text-secondary mt-1 text-sm uppercase">
+                {user?.role}
+              </div>
+            </div>
+            <div className="text-3xl text-gray-400">🦖</div>
+          </div>
+        </div>
+      </section>
+      <section className="mt-5 rounded-md bg-white p-3">
+        <div className="flex items-center">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">切換身分</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuCheckboxItem
+                data-value="USER"
+                onClick={handleRoleChange}
+              >
+                USER
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                data-value="ADMIN"
+                onClick={handleRoleChange}
+              >
+                ADMIN
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        <DataTable
+          data={users}
+          columns={columns}
+          filterKey="email"
+          filterPlaceholder="搜尋 Email..."
+          onRowSelectionChange={setSelectedUsers}
+        />
+      </section>
+    </div>
   );
 }
