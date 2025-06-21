@@ -1,4 +1,3 @@
-// useAdminGuard.ts
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -9,10 +8,12 @@ export function useAdminGuard(apiPath: string = "/db") {
   useEffect(() => {
     fetch(`http://localhost:8081${apiPath}`, { credentials: "include" })
       .then((res) => {
-        if (res.status === 403 || res.status === 401) {
+        if (!res.ok) {
+          // 捕捉 401, 403, 500... 都導向 404
           navigate("/404", { replace: true });
+          throw new Error(`Fetch error: ${res.status}`);
         }
-        return res.text();
+        return res.text(); // or res.json()
       })
       .catch(() => {
         navigate("/404", { replace: true });

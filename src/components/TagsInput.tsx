@@ -34,6 +34,7 @@ function TagsInput({
     const data = await getAllTags();
     setAllTags(data.data);
   }
+
   function handleAddSelectedTag(tagName: string) {
     if (!selectedTags.includes(tagName)) {
       const newTags = [...selectedTags, tagName];

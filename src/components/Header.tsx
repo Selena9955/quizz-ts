@@ -47,7 +47,6 @@ function Header() {
       alert("⚠️ 登出失敗，請稍後再試");
     }
   }
-  console.log(user);
 
   return (
     <header className="fixed inset-x-0 top-0 z-49 border-b border-gray-950/5">

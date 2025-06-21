@@ -1,3 +1,5 @@
+import { dbGetTagUsage } from "@/api/admin.api";
+import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -14,6 +16,17 @@ import {
 } from "recharts";
 
 function Admin() {
+  const [hotTags, setHotTags] = useState([]);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await dbGetTagUsage({});
+        setHotTags(data);
+      } catch (error) {}
+    }
+    fetchData();
+  }, []);
+
   const stats = [
     { label: "使用者總數", value: 12, icon: "👻" },
     { label: "管理員", value: 2, icon: "⚡" },
@@ -21,15 +34,6 @@ function Admin() {
     { label: "標籤數量", value: 24, icon: "🔥" },
     { label: "測驗題目", value: 14, icon: "📖" },
     { label: "文章總數", value: 3, icon: "📝" },
-  ];
-
-  const hotTags = [
-    { name: "java", value: 25 },
-    { name: "tailwind", value: 10 },
-    { name: "數學", value: 2 },
-    { name: "英文", value: 8 },
-    { name: "html", value: 5 },
-    { name: "mysql", value: 12 },
   ];
 
   const posts = [

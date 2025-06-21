@@ -19,7 +19,7 @@ const MainMenu = [
   { label: "總覽", path: "/db", icon: LayoutDashboard },
   { label: "會員管理", path: "/db/members", icon: BarChart3 },
   { label: "標籤管理", path: "/db/tags", icon: ShoppingBag },
-  { label: "文章管理", path: "/db/articles", icon: ListOrdered },
+  // { label: "文章管理", path: "/db/articles", icon: ListOrdered },
 ];
 
 const Preferences = [
@@ -30,7 +30,7 @@ const Preferences = [
 export default function DashboardLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const loading = useAdminGuard("/db/");
+  const loading = useAdminGuard("/db");
 
   if (loading) return null;
 
