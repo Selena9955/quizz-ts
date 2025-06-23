@@ -3,8 +3,12 @@ import { useNavigate, useLocation, Link, useSearchParams } from "react-router";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
-import { getAllQuizzes } from "@/api/quiz.api";
-import type { FilterType, QuizListData } from "@/types/quiz.types";
+import { getAllQuizzes, getUserRecord } from "@/api/quiz.api";
+import type {
+  FilterType,
+  QuizListData,
+  userRecordData,
+} from "@/types/quiz.types";
 import type { TagData } from "@/types/tag.types";
 import QuizCard from "@/components/QuizCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,23 +23,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import PaginationGroup from "@/components/PaginationGroup";
 
-const mockUser = {
-  username: "99",
-  avatarUrl: "https://picsum.photos/960", // 隨機產生頭像
-  stats: {
-    totalAnswered: 12,
-    correctRate: 0.83,
-    recentQuizzes: [
-      {
-        id: 1,
-        title: "單字水果測驗",
-      },
-      { id: 2, title: "CSS Flex 基礎" },
-      { id: 3, title: "Java 基礎入門" },
-    ],
-  },
-};
-
 function Quizzes() {
   const { user } = useAuth();
   const location = useLocation();
@@ -46,10 +33,19 @@ function Quizzes() {
   const [currPage, setCurrPage] = useState<number>(1);
   const [allPage, setAllPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
+  const [userRecord, setUserRecord] = useState<userRecordData>();
   const [popularTags, setPopularTags] = useState<TagData[]>([
     { id: 20, name: "good" },
     { id: 3, name: "test" },
   ]);
+
+  useEffect(() => {
+    async function fetchUserRecord() {
+      const data = await getUserRecord();
+      setUserRecord(data);
+    }
+    fetchUserRecord();
+  }, []);
 
   useEffect(() => {
     if (location.state?.reload) {
@@ -110,7 +106,7 @@ function Quizzes() {
         <div className="relative z-2 container pt-32 pb-8">
           <div className="grid gap-6 rounded-md border bg-white p-5 shadow-sm md:grid-cols-[3fr_2fr] md:px-10 md:py-8">
             {/* 頭像 + 使用者資訊 */}
-            <div className="flex items-center gap-4 md:gap-8">
+            <div className="flex items-center gap-4 md:gap-8 md:border-r">
               <Avatar className="size-20 md:size-28">
                 <AvatarImage src={user?.avatarUrl} />
                 <AvatarFallback>default</AvatarFallback>
@@ -118,33 +114,39 @@ function Quizzes() {
 
               <div>
                 <h2 className="text-lg font-semibold">
-                  {user?.username ?? "尚未登入"}
+                  {user?.username ?? "登入解鎖統計功能"}
                 </h2>
-                <p className="text-muted-foreground flex flex-wrap space-x-3 text-sm">
-                  <span>完成 {mockUser.stats.totalAnswered} 題</span>
-                  <span>
-                    正確率 {Math.round(mockUser.stats.correctRate * 100)}%
-                  </span>
-                </p>
+                <div className="text-muted-foreground text-sm">
+                  <p>完成 {userRecord?.totalCount ?? 0} 題</p>
+                  <p>
+                    <span>答對 {userRecord?.correctCount ?? 0} 題</span>．
+                    <span>正確率 {userRecord?.correctRate ?? 0}%</span>
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* 最近答過的題目 */}
-            <div className="flex flex-col justify-center space-y-2 text-sm md:items-center">
+            <div className="flex flex-col justify-center space-y-2 text-sm">
               <h6 className="text-muted-foreground font-medium">
                 最近答過的題目
               </h6>
               <ul className="grid gap-1">
-                {mockUser.stats.recentQuizzes.slice(0, 3).map((quiz) => (
-                  <li key={quiz.id}>
-                    <Link
-                      to={`/quizzes/${quiz.id}`}
-                      className="text-primary hover:underline"
-                    >
-                      {quiz.title}
-                    </Link>
-                  </li>
-                ))}
+                {userRecord?.recentQuizzes &&
+                userRecord.recentQuizzes.length > 0 ? (
+                  userRecord.recentQuizzes.map((quiz) => (
+                    <li key={quiz.id}>
+                      <Link
+                        to={`/quizzes/${quiz.id}`}
+                        className="text-primary hover:underline"
+                      >
+                        {quiz.title}
+                      </Link>
+                    </li>
+                  ))
+                ) : (
+                  <li className="text-muted-foreground">無紀錄</li>
+                )}
               </ul>
             </div>
           </div>

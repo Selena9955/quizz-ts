@@ -14,16 +14,34 @@ import {
   YAxis,
   Cell,
 } from "recharts";
+import { toast } from "sonner";
 
 function Admin() {
   const [hotTags, setHotTags] = useState([]);
+
   useEffect(() => {
     async function fetchData() {
       try {
         const data = await dbGetTagUsage({});
-        setHotTags(data);
-      } catch (error) {}
+
+        // 排序：value 從大到小
+        const sorted = [...data].sort((a, b) => b.value - a.value);
+
+        const maxVisible = 10;
+        const visible = sorted.slice(0, maxVisible);
+        const others = sorted.slice(maxVisible);
+
+        if (others.length > 0) {
+          const otherTotal = others.reduce((sum, item) => sum + item.value, 0);
+          visible.push({ name: "其他", value: otherTotal });
+        }
+
+        setHotTags(visible);
+      } catch (err) {
+        toast.error("載入熱門標籤失敗");
+      }
     }
+
     fetchData();
   }, []);
 
@@ -62,10 +80,12 @@ function Admin() {
   const colors = [
     "#d46868",
     "#ffdfa0",
-    "#fce7f3",
-    "#dbbeed",
+    "#d4acc3",
+    "#b58bcf",
     "#7ea9aa",
     "#5d768b",
+    "#728b3a",
+    "#3a5e97",
   ];
   return (
     <div className="min-h-screen p-6">
@@ -109,7 +129,7 @@ function Admin() {
                 paddingAngle={5}
                 label
               >
-                {hotTags.map((entry, index) => (
+                {hotTags.map((_, index) => (
                   <Cell
                     key={`cell-${index}`}
                     fill={colors[index % colors.length]}

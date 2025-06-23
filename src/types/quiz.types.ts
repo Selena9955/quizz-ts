@@ -72,3 +72,13 @@ export type QuizRecordStats = {
   correctCount: number;
   correctRate: number;
 };
+
+export type userRecordData = {
+  totalCount: number;
+  correctCount: number;
+  correctRate: number; // 百分比形式
+  recentQuizzes: {
+    id: number;
+    title: string;
+  }[];
+};

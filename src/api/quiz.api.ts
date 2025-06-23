@@ -119,9 +119,25 @@ export async function getLatestQuizzes() {
 
   if (!res.ok) {
     const error = new Error(resData.message || "取得失敗");
-    (error as any).status = res.status; // ✅ 加入 status 回傳
+    (error as any).status = res.status; // 加入 status 回傳
     throw error;
   }
 
   return resData.data;
+}
+
+export async function getUserRecord() {
+  try {
+    const res = await fetch(`${API_BASE}/quizzes/UserRecord`, {
+      method: "GET",
+      credentials: "include",
+    });
+    const resData = await res.json();
+
+    if (!res.ok) throw new Error(resData.message || "取得記錄失敗");
+
+    return resData.data;
+  } catch (err: any) {
+    console.error(err.message);
+  }
 }
