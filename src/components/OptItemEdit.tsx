@@ -40,17 +40,13 @@ function SingleOptItemEdit({
         <GripVertical />
       </span>
       {quizType == 0 && (
-        <RadioGroupItem
-          value={id}
-          onClick={() => handleSelectedAnswer(id)}
-          checked={correctAnswerId?.includes(id) ?? false}
-        />
+        <RadioGroupItem value={id} onClick={() => handleSelectedAnswer(id)} />
       )}
       {quizType == 1 && (
         <Checkbox
           value={id}
           onClick={() => handleSelectedAnswer(id)}
-          defaultChecked={correctAnswerId?.includes(id) ?? false}
+          checked={correctAnswerId?.includes(id) ?? false}
         />
       )}
       <input

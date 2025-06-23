@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from "uuid";
 import OptItemEdit from "./OptItemEdit";
 import { closestCorners, DndContext, type DragEndEvent } from "@dnd-kit/core";
@@ -36,15 +36,29 @@ function OptEdit({
   multipleAnswer = null,
 }: OptEditProps) {
   const [correctAnswerId, setCorrectAnswerId] = useState<string[]>([]);
+  const initializedRef = useRef(false);
 
   // 初始化時根據外部傳入的答案設 correctAnswerId
   useEffect(() => {
-    if (quizType === QuizTypeType.Single && singleAnswerId) {
+    if (
+      quizType === QuizTypeType.Single &&
+      singleAnswerId &&
+      singleAnswerId !== ""
+    ) {
       setCorrectAnswerId([singleAnswerId]);
-    } else if (quizType === QuizTypeType.Multiple && multipleAnswer) {
-      setCorrectAnswerId(multipleAnswer);
     }
-  }, [quizType, singleAnswerId, JSON.stringify(multipleAnswer)]);
+  }, [quizType, singleAnswerId]);
+
+  useEffect(() => {
+    if (
+      quizType === QuizTypeType.Multiple &&
+      multipleAnswer &&
+      !initializedRef.current
+    ) {
+      setCorrectAnswerId(multipleAnswer);
+      initializedRef.current = true;
+    }
+  }, [quizType, multipleAnswer]);
 
   // 每次 correctAnswerId 改變時，通知外部
   useEffect(() => {
@@ -109,14 +123,16 @@ function OptEdit({
         個選項作為解答，最少需要兩個選項
       </p>
 
-      <RadioGroup defaultValue="" className="my-4">
-        <DndContext
-          collisionDetection={closestCorners}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext
-            items={options}
-            strategy={verticalListSortingStrategy}
+      <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
+        <SortableContext items={options} strategy={verticalListSortingStrategy}>
+          <RadioGroup
+            value={
+              quizType === QuizTypeType.Single ? correctAnswerId[0] || "" : ""
+            }
+            onValueChange={(val: string) => {
+              if (quizType === QuizTypeType.Single) handleSelectedAnswer(val);
+            }}
+            className="my-4"
           >
             {options.map((opt) => (
               <OptItemEdit
@@ -129,9 +145,10 @@ function OptEdit({
                 correctAnswerId={correctAnswerId}
               />
             ))}
-          </SortableContext>
-        </DndContext>
-      </RadioGroup>
+          </RadioGroup>
+        </SortableContext>
+      </DndContext>
+
       <div className="text-center">
         <Button
           className="text-muted-foreground"

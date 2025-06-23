@@ -66,16 +66,19 @@ function QuizEdit() {
           setAnswerDetail(data.answerDetail);
           setTags(tagNames);
           if (data.quizType == QuizTypeType.Single) {
+            setQuizType(QuizTypeType.Single);
             setOptions(data.options);
             handleSingleAnswerChange(data.singleAnswerId);
             setSingleAnswerId(data.singleAnswerId);
           }
           if (data.quizType == QuizTypeType.Multiple) {
+            setQuizType(QuizTypeType.Multiple);
             setOptions(data.options);
             setMultipleAnswerId(data.multipleAnswerId);
           }
           if (data.quizType == QuizTypeType.Flash) {
-            setOptions(data.flashAnswer);
+            setQuizType(QuizTypeType.Flash);
+            setFlashAnswer(data.flashAnswer);
           }
         } catch (err: any) {
           toast.error(err.message);
