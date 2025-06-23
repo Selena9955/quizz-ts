@@ -53,6 +53,7 @@ function QuizDetail() {
 
       try {
         const resData = await getQuizById(id);
+        console.log(resData);
 
         setQuiz(resData);
         setIsOptCorrect(null);
@@ -247,7 +248,7 @@ function QuizDetail() {
         {showAnswer && quiz.answerDetail && (
           <div className="bg-muted mt-10 space-y-2 rounded-sm p-4">
             <Label className="text-secondary">解答補充</Label>
-            <p>{quiz.answerDetail}</p>
+            <p className="whitespace-pre-line">{quiz.answerDetail}</p>
           </div>
         )}
 
