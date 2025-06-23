@@ -66,7 +66,6 @@ function Quizzes() {
 
   async function fetchGetAll() {
     const data = await getAllQuizzes(filterType, currPage, pageSize);
-    console.log(data);
 
     setQuizzes(data.items);
     setAllPage(data.totalPages);

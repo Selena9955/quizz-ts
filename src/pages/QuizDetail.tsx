@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Ellipsis, CircleCheckBig, CircleX } from "lucide-react";
+import { Ellipsis } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router";
 import {
   DropdownMenu,
@@ -53,7 +53,6 @@ function QuizDetail() {
 
       try {
         const resData = await getQuizById(id);
-        console.log(resData);
 
         setQuiz(resData);
         setIsOptCorrect(null);

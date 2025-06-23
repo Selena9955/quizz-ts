@@ -54,7 +54,6 @@ export async function getQuizById(id: string | undefined) {
     (error as any).status = res.status; // ✅ 加入 status 回傳
     throw error;
   }
-  console.log(resData);
 
   return resData.data;
 }

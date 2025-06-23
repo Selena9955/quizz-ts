@@ -1,8 +1,9 @@
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { cn } from "@/lib/utils";
 import { QuizTypeLabels, type QuizListData } from "@/types/quiz.types";
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { tagsRecordSearch } from "@/api/tag.api";
 
 type QuizCardProps = {
   quiz: QuizListData;
@@ -11,6 +12,18 @@ type QuizCardProps = {
 
 function QuizCard({ quiz, className }: QuizCardProps) {
   const { id, quizType, title, authorName, tags, quizStats, avatarUrl } = quiz;
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const isFromSearchPage = location.pathname.startsWith("/search");
+
+  function handleClick() {
+    if (isFromSearchPage) {
+      tagsRecordSearch(tags);
+    }
+
+    navigate(`/quizzes/${quiz.id}`);
+  }
 
   const difficultyColor = (rate: number) => {
     if (rate >= 0.8) return "text-green-600";
@@ -19,7 +32,11 @@ function QuizCard({ quiz, className }: QuizCardProps) {
   };
 
   return (
-    <Link to={`/quizzes/${id}`} className={cn("group", className)}>
+    <Link
+      to={`/quizzes/${id}`}
+      onClick={handleClick}
+      className={cn("group", className)}
+    >
       <div className="flex justify-between space-y-2 bg-white transition">
         <div className="text-muted-foreground mt-1 flex items-center gap-3 text-xs">
           <span className="text-secondary">

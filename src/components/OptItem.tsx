@@ -27,12 +27,9 @@ function OptItem({
   function handleSelect(id: string) {
     if (quizType === QuizTypeType.Single) {
       // 單選題：只保留一個 id
-      console.log("單");
-
       onSelectAnswers([id]);
     } else {
       // 多選題：toggle
-      console.log("多");
       if (selectedAnswers.includes(id)) {
         onSelectAnswers(selectedAnswers.filter((ans) => ans !== id));
       } else {
@@ -41,8 +38,6 @@ function OptItem({
     }
   }
   function getBgColor(id: string) {
-    console.log(showAnswer);
-
     const isCorrect = currAnswers.includes(id) || currAnswer.includes(id);
     const isSelected = selectedAnswers.includes(id);
 

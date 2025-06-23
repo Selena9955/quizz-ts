@@ -19,10 +19,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-type StatItem = {
-  label: string;
-  value: string;
-};
 const defaultProfile = {
   id: 0,
   username: "預設模板",
@@ -214,8 +210,11 @@ function Profile() {
             <div className="space-y-3">
               {quizzes && quizzes.length > 0 ? (
                 quizzes.map((quiz) => (
-                  <div className="rounded-md bg-white p-2 shadow md:px-4">
-                    <QuizCard key={quiz.id} quiz={quiz} />
+                  <div
+                    key={quiz.id}
+                    className="rounded-md bg-white p-2 shadow md:px-4"
+                  >
+                    <QuizCard quiz={quiz} />
                   </div>
                 ))
               ) : (

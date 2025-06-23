@@ -53,3 +53,21 @@ export async function updateHomeHotTags(payload: string[]) {
     throw err;
   }
 }
+
+export async function tagsRecordSearch(payload: string[]) {
+  try {
+    const res = await fetch(`${API_BASE}/tags/record-search`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const resData = await res.json();
+      throw new Error(resData.message || "紀錄失敗");
+    }
+    console.log("標籤搜尋紀錄成功");
+  } catch (err) {
+    console.error("tagsRecordSearch", err);
+  }
+}
