@@ -78,7 +78,7 @@ function Home() {
             {hotTags.map((tag) => (
               <Link
                 key={tag.id}
-                to=""
+                to={`/search?q=${tag.name}`}
                 className="hover:bg-secondary/80 cursor-pointer rounded-xl bg-gray-100 p-6 hover:text-white hover:shadow"
               >
                 <p className="text-lg font-semibold">{tag.name}</p>

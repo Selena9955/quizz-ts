@@ -130,7 +130,7 @@ function QuizEdit() {
     setMultipleAnswerId(id);
   }, []);
 
-  function handleNewSubmit() {
+  async function handleNewSubmit() {
     const error = validateQuizData({
       quizType,
       title,
@@ -147,6 +147,7 @@ function QuizEdit() {
       setErrMsg(error);
       return;
     }
+
     const payload = {
       quizType: quizType,
       title: title,
@@ -158,27 +159,25 @@ function QuizEdit() {
       answerDetail: answerDetail,
       tags: tags,
     };
-    if (id) {
-      updateQuiz(id, payload);
-      toast.success("修改成功");
-      navigate("/quizzes", {
-        replace: true,
-        state: { reload: true },
-      });
-    } else {
-      try {
-        createQuiz(payload);
+
+    try {
+      if (id) {
+        await updateQuiz(id, payload);
+        toast.success("修改成功");
+      } else {
+        await createQuiz(payload);
         initStatus();
-        if (!hasMoreAdd) {
-          setQuizType(QuizTypeType.Single);
-          navigate("/quizzes", {
-            replace: true,
-            state: { reload: true },
-          });
-        }
-      } catch (err) {
-        alert("新增失敗，請稍後再嘗試");
       }
+
+      if (!hasMoreAdd) {
+        setQuizType(QuizTypeType.Single);
+        navigate("/quizzes", {
+          replace: true,
+          state: { reload: true },
+        });
+      }
+    } catch (err) {
+      toast.error("操作失敗，請稍後再試");
     }
   }
 

@@ -134,8 +134,8 @@ function Quizzes() {
               <ul className="grid gap-1">
                 {userRecord?.recentQuizzes &&
                 userRecord.recentQuizzes.length > 0 ? (
-                  userRecord.recentQuizzes.map((quiz) => (
-                    <li key={quiz.id}>
+                  userRecord.recentQuizzes.map((quiz, index) => (
+                    <li key={index}>
                       <Link
                         to={`/quizzes/${quiz.id}`}
                         className="text-primary hover:underline"

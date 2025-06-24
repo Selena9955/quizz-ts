@@ -18,6 +18,7 @@ export async function createQuiz(payload: QuizSubmitData) {
     }
   } catch (err) {
     console.error("createQuiz error:", err);
+    throw err;
   }
 }
 
@@ -73,6 +74,7 @@ export async function deleteQuizById(id: number) {
     }
   } catch (err) {
     console.error("deleteQuiz error:", err);
+    throw err;
   }
 }
 
@@ -91,6 +93,7 @@ export async function updateQuiz(id: string, payload: QuizSubmitData) {
     }
   } catch (err) {
     console.error("createQuiz error:", err);
+    throw err;
   }
 }
 

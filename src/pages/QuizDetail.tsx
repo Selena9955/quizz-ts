@@ -239,7 +239,7 @@ function QuizDetail() {
         <h1 className="mt-10 mb-3 text-3xl font-bold">{quiz.title}</h1>
 
         <div
-          className="[&_img]:mx-auto [&_img]:block"
+          className="ql-editor [&_img]:mx-auto [&_img]:block"
           dangerouslySetInnerHTML={{ __html: quiz.titleDetail }}
         />
         <hr className="my-6" />

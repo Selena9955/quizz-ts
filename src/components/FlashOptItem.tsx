@@ -8,7 +8,7 @@ function FlashOptItem({ flashAnswer, showAnswer }: FlashOptItemProps) {
     <div>
       {showAnswer && (
         <div
-          className="[&_img]:mx-auto [&_img]:block"
+          className="ql-editor [&_img]:mx-auto [&_img]:block"
           dangerouslySetInnerHTML={{ __html: flashAnswer }}
         />
       )}

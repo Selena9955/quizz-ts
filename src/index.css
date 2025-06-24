@@ -143,6 +143,7 @@
 }
 
 .ql-editor {
+  font-family: "Noto Sans", "Inter", sans-serif;
   min-height: 10rem;
   font-size: 1rem;
   h1 {
@@ -174,6 +175,16 @@
   ul {
     padding-left: 0px !important;
     margin: 0.5rem 0 !important;
+
+    li {
+      padding: 0.25rem 0;
+    }
+  }
+  strong {
+    font-weight: 700 !important;
+  }
+  code {
+    @apply rounded-sm bg-gray-100 px-0.5 py-1;
   }
 }
 .ql-snow .ql-editor {
