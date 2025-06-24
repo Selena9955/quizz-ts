@@ -145,7 +145,58 @@
 .ql-editor {
   min-height: 10rem;
   font-size: 1rem;
+  h1 {
+    @apply text-4xl font-bold;
+  }
+  h2 {
+    @apply text-3xl font-bold;
+  }
+  h3 {
+    @apply text-2xl font-bold;
+  }
+  h4 {
+    @apply text-xl font-bold;
+  }
+  h5 {
+    @apply text-lg font-bold;
+  }
+  h6 {
+    @apply text-base font-bold;
+  }
+
+  blockquote {
+    @apply border-l-4 border-gray-300;
+    em {
+      @apply pl-2;
+    }
+  }
+  ol,
+  ul {
+    padding-left: 0px !important;
+    margin: 0.5rem 0 !important;
+  }
 }
+.ql-snow .ql-editor {
+  h1 {
+    font-size: 2em !important;
+  }
+  h2 {
+    font-size: 1.875em !important;
+  }
+  h3 {
+    font-size: 1.5em !important;
+  }
+  h4 {
+    font-size: 1.25em !important;
+  }
+  h5 {
+    font-size: 1.125em !important;
+  }
+  h6 {
+    font-size: 1em !important;
+  }
+}
+
 .ql-toolbar.ql-snow,
 .ql-container.ql-snow {
   border: 1px solid var(--muted-hover) !important;
@@ -155,4 +206,7 @@
 }
 .ql-container {
   @apply rounded-br-md rounded-bl-md;
+}
+.ql-code-block-container {
+  @apply my-2 rounded-md bg-gray-900 px-4 py-2 text-white;
 }

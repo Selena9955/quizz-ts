@@ -83,11 +83,15 @@ function Header() {
                       <Button>新增</Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem>
-                        <Link to="/quizzes/new">新增題目</Link>
+                      <DropdownMenuItem asChild>
+                        <Link to="/quizzes/new" className="w-full">
+                          新增題目
+                        </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Link to="/articles/new">新增討論</Link>
+                      <DropdownMenuItem asChild>
+                        <Link to="/articles/new" className="w-full">
+                          新增討論
+                        </Link>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -106,7 +110,7 @@ function Header() {
                       <EllipsisVertical />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem>設定</DropdownMenuItem>
+                      {/* <DropdownMenuItem>設定</DropdownMenuItem> */}
                       {user.role !== "USER" && (
                         <DropdownMenuItem asChild>
                           <Link to="/db">後臺管理</Link>
@@ -145,10 +149,10 @@ function Header() {
           {isLoggedIn && (
             <div className="flex items-center gap-4 rounded-md bg-white p-4">
               <Avatar>
-                <AvatarImage src="https://github.com/.png" alt="@shadcn" />
-                <AvatarFallback>U</AvatarFallback>
+                <AvatarImage src={user.avatarUrl} />
+                <AvatarFallback>err</AvatarFallback>
               </Avatar>
-              <p>username</p>
+              <p>{user.username} </p>
             </div>
           )}
 
@@ -176,12 +180,12 @@ function Header() {
             <hr className="my-2" />
             {isLoggedIn ? (
               <>
-                <NavLink
+                {/* <NavLink
                   to=""
                   className="hover:bg-accent rounded-lg p-2 font-bold text-gray-600"
                 >
                   設定
-                </NavLink>
+                </NavLink> */}
                 <Link
                   to=""
                   className="hover:bg-accent rounded-lg p-2 font-bold text-gray-600"

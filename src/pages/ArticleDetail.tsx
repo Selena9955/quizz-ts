@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import "quill/dist/quill.snow.css";
 import { Link, useNavigate, useParams } from "react-router";
 import { Ellipsis } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
@@ -103,7 +104,10 @@ function ArticleDetail() {
           )}
         </div>
         <hr className="mt-2 mb-5" />
-        <div dangerouslySetInnerHTML={{ __html: article.content }} />
+        <div
+          className="ql-editor"
+          dangerouslySetInnerHTML={{ __html: article.content }}
+        />
       </article>
     </div>
   );
