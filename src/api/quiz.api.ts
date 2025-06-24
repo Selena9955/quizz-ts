@@ -1,4 +1,5 @@
 import type { FilterType, QuizSubmitData } from "@/types/quiz.types";
+import type { TagData } from "@/types/tag.types";
 
 const API_BASE = "http://localhost:8081";
 
@@ -140,4 +141,20 @@ export async function getUserRecord() {
   } catch (err: any) {
     console.error(err.message);
   }
+}
+
+export async function getRecommendByTags(tags: TagData[], id?: number) {
+  const payload = {
+    tags: tags,
+    excludeId: id ?? null,
+  };
+
+  const res = await fetch(`${API_BASE}/quizzes/recommend`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "取得推薦失敗");
+  return data.data;
 }

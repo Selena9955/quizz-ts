@@ -1,6 +1,19 @@
 import { useEffect, useState } from "react";
 import { Ellipsis } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router";
+import type { TagData } from "@/types/tag.types";
+import {
+  QuizTypeType,
+  type QuizDetailData,
+  type QuizListData,
+  type QuizRecordStats,
+} from "@/types/quiz.types";
+import {
+  deleteQuizById,
+  getQuizById,
+  getRecommendByTags,
+  recordAnswer,
+} from "@/api/quiz.api";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,12 +22,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { deleteQuizById, getQuizById, recordAnswer } from "@/api/quiz.api";
-import {
-  QuizTypeType,
-  type QuizDetailData,
-  type QuizRecordStats,
-} from "@/types/quiz.types";
 import { useAuth } from "@/context/AuthContext";
 import OptItem from "@/components/OptItem";
 import { Label } from "@/components/ui/label";
@@ -38,6 +45,7 @@ function QuizDetail() {
     correctCount: 0,
     correctRate: 0,
   });
+  const [recommendList, setRecommendList] = useState<QuizListData[]>([]);
 
   const shouldShowResultBlock =
     quiz?.quizType !== QuizTypeType.Flash
@@ -50,13 +58,20 @@ function QuizDetail() {
         navigate("/404", { replace: true });
         return;
       }
-
+      initState();
       try {
         const resData = await getQuizById(id);
 
         setQuiz(resData);
         setIsOptCorrect(null);
         setIsAuthor(resData.authorId === user?.id);
+
+        // 相關題目推薦
+        if (resData.tags && resData.tags.length > 0) {
+          console.log(resData.tags);
+
+          fetchRecommend(resData.tags, resData.id);
+        }
       } catch (err: any) {
         if (err.status === 404) {
           toast.error(err.message);
@@ -66,10 +81,35 @@ function QuizDetail() {
         }
       }
     }
+
+    async function fetchRecommend(tags: TagData[], id: number) {
+      try {
+        const result = await getRecommendByTags(tags, id);
+        console.log(result);
+
+        setRecommendList(result);
+      } catch (err: any) {
+        console.error("推薦失敗", err.message);
+      }
+    }
+
     fetchData();
-  }, []);
+  }, [id]);
 
   if (!quiz) return <p>載入中...</p>;
+
+  function initState() {
+    setQuiz(undefined);
+    setSelectedAnswers([]);
+    setShowAnswer(false);
+    setIsOptCorrect(null);
+    setFlashResult(null);
+    setRecordStats({
+      totalCount: 0,
+      correctCount: 0,
+      correctRate: 0,
+    });
+  }
 
   async function handleDelete(id: number) {
     if (!confirm("確定要刪除這篇嗎？")) return;
@@ -308,23 +348,27 @@ function QuizDetail() {
           </div>
           <div className="mt-4 border-t pt-4">
             <h3 className="text-secondary text-lg font-semibold">相關題目</h3>
-            <ul className="text-muted-foreground mt-3 list-inside list-disc text-sm">
-              <li className="hover:text-primary flex">
-                <span className="before:mr-2 before:content-['•']" />
-                <Link
-                  to=""
-                  className="flex w-full flex-wrap justify-between gap-2"
-                >
-                  <span className="">
-                    相關題目相關題目相關題目相關題目相關題目相關題目
-                  </span>
-                  <div className="space-x-2">
-                    <Badge size="sm">tag</Badge>
-                    <Badge size="sm">tag</Badge>
-                    <Badge size="sm">tag</Badge>
-                  </div>
-                </Link>
-              </li>
+            <ul className="text-muted-foreground mt-3 list-inside list-disc space-y-2 text-sm">
+              {recommendList.length > 0 ? (
+                recommendList.map((quiz) => (
+                  <li className="hover:text-primary flex">
+                    <span className="before:mr-2 before:content-['•']" />
+                    <Link
+                      to={`/quizzes/${quiz.id}`}
+                      className="flex w-full flex-wrap justify-between gap-2"
+                    >
+                      <span className="">{quiz.title}</span>
+                      <div className="space-x-2">
+                        {quiz.tags.map((tag) => (
+                          <Badge size="sm">{tag}</Badge>
+                        ))}
+                      </div>
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <li>沒有相關題目</li>
+              )}
             </ul>
           </div>
         </div>
