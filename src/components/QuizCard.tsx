@@ -65,12 +65,12 @@ function QuizCard({ quiz, className }: QuizCardProps) {
 
       <div className="items-center md:flex md:justify-between">
         {/* 標題 */}
-        <h3 className="text-foreground group-hover:text-primary text-lg font-semibold break-words md:truncate">
+        <h3 className="text-foreground group-hover:text-primary text-lg font-semibold break-words">
           {title}
         </h3>
 
-        {/* 桌：標籤 */}
-        <div className="mt-2 flex flex-wrap items-center gap-1 md:mt-0">
+        {/* 標籤 */}
+        <div className="mt-2 flex flex-wrap items-center gap-1 md:mt-0 md:min-w-40 md:justify-end">
           {tags.length > 0 ? (
             tags.map((tag, index) => (
               <Badge key={index} size="sm">
