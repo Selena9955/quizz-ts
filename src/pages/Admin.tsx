@@ -38,7 +38,7 @@ function Admin() {
 
         setHotTags(visible);
       } catch (err) {
-        toast.error("載入熱門標籤失敗");
+        // toast.error("載入熱門標籤失敗");
       }
     }
 

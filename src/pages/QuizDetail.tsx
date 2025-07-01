@@ -116,6 +116,7 @@ function QuizDetail() {
 
     try {
       await deleteQuizById(id);
+      navigate("/quizzes");
     } catch (error) {
       alert("刪除失拜，請稍後嘗試");
     }
